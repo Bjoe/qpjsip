@@ -17,4 +17,9 @@ TransportConfiguration &TransportConfiguration::withPort(int aPort)
     return *this;
 }
 
+int TransportConfiguration::getPort() const
+{
+    return port;
+}
+
 } // namespace qpjsua

@@ -1,8 +1,6 @@
 #ifndef QPJSUA_MEDIACONFIGURATION_H
 #define QPJSUA_MEDIACONFIGURATION_H
 
-#include "engine.h"
-
 namespace qpjsua {
 
 class MediaConfiguration
@@ -12,8 +10,6 @@ public:
 
 private:
     MediaConfiguration();
-
-    friend class Engine;
 };
 
 } // namespace qpjsua

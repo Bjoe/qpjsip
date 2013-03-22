@@ -11,7 +11,6 @@
 namespace qpjsua {
 
 class AccountConfiguration;
-class LoggingConfiguration;
 class MediaConfiguration;
 class TransportConfiguration;
 
@@ -20,11 +19,7 @@ class Engine
 public:
     ~Engine();
 
-    static Engine create(const LoggingConfiguration &aLoggingConfiguration, const MediaConfiguration &aMediaConfiguration);
-    void start(const TransportConfiguration &aTransportConfiguration) const;
     void addAccount(AccountConfiguration &anAccountConfiguration) const;
-
-    //void init();
 
 private:
     static void on_call_state(pjsua_call_id call_id, pjsip_event *event);
@@ -34,6 +29,24 @@ private:
     static void on_transport_state(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info);
 
     Engine();
+
+public:
+    class Builder
+    {
+    public:
+        static Builder create();
+        Builder &withMediaConfiguration(const MediaConfiguration &aMediaConfiguration);
+        Builder &withLoggingConfiguration(const LoggingConfiguration &aLoggingConfiguration);
+        Builder &withTransportConfiguration(const TransportConfiguration &aTransportConfiguration);
+        Engine build() const;
+
+    private:
+        MediaConfiguration mediaConfiguration;
+        LoggingConfiguration loggingConfiguration;
+        TransportConfiguration transportConfiguration;
+
+        Builder();
+    };
 };
 
 } // namespace qpjsua

@@ -17,4 +17,9 @@ LoggingConfiguration &LoggingConfiguration::withConsoleLevel(int aLevel)
     return *this;
 }
 
+int LoggingConfiguration::getConsoleLevel() const
+{
+    return consoleLevel;
+}
+
 } // namespace qpjsua

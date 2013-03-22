@@ -38,8 +38,12 @@ int main(int argc, char *argv[])
 
 
 
-    Engine engine = Engine::create(loggingConfiguration, mediaConfiguration);
-    engine.start(transportConfiguration);
+    Engine engine = Engine::Builder::create()
+            .withLoggingConfiguration(loggingConfiguration)
+            .withMediaConfiguration(mediaConfiguration)
+            .withTransportConfiguration(transportConfiguration)
+            .build();
+
     engine.addAccount(accountConfiguration);
 
 
