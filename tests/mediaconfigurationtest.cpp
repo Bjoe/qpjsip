@@ -21,9 +21,6 @@ private slots:
 void MediaConfigurationTest::testBuild()
 {
     qpjsua::MediaConfiguration mediaConfiguration = qpjsua::MediaConfiguration::build();
-    pjsua_media_config configuration = mediaConfiguration.getPjsuaMediaConfig();
-    uint count = 1;
-    QCOMPARE(configuration.thread_cnt, count);
 }
 
 }

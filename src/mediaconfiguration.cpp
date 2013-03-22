@@ -2,9 +2,8 @@
 
 namespace qpjsua {
 
-MediaConfiguration::MediaConfiguration() : configuration()
+MediaConfiguration::MediaConfiguration()
 {
-    pjsua_media_config_default(&configuration);
 }
 
 MediaConfiguration MediaConfiguration::build()

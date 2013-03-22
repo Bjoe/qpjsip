@@ -30,7 +30,6 @@ void AccountConfigurationTest::testBuild()
             .withRegistrationUri("sip:bar.de")
             .addProxy("sip:proxy.example.com")
             .addCredential(credential);
-            //.create();
 }
 
 }

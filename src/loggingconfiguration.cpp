@@ -2,9 +2,8 @@
 
 namespace qpjsua {
 
-LoggingConfiguration::LoggingConfiguration() : configuration()
+LoggingConfiguration::LoggingConfiguration() : consoleLevel(0)
 {
-    pjsua_logging_config_default(&configuration);
 }
 
 LoggingConfiguration LoggingConfiguration::build()
@@ -14,7 +13,7 @@ LoggingConfiguration LoggingConfiguration::build()
 
 LoggingConfiguration &LoggingConfiguration::withConsoleLevel(int aLevel)
 {
-    configuration.console_level = aLevel;
+    consoleLevel = aLevel;
     return *this;
 }
 

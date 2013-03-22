@@ -1,7 +1,7 @@
 #ifndef QPJSUA_TRANSPORTCONFIGURATION_H
 #define QPJSUA_TRANSPORTCONFIGURATION_H
 
-#include "pjsua.h"
+#include "engine.h"
 
 namespace qpjsua {
 
@@ -11,12 +11,12 @@ public:
     static TransportConfiguration build();
     TransportConfiguration &withPort(int aPort);
 
-    pj_status_t create() const;
-
 private:
-    pjsua_transport_config configuration;
+    int port;
 
     TransportConfiguration();
+
+    friend class Engine;
 };
 
 } // namespace qpjsua

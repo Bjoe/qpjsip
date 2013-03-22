@@ -39,35 +39,6 @@ AccountConfiguration &AccountConfiguration::addCredential(const AccountCredentia
     return *this;
 }
 
-pj_status_t AccountConfiguration::create()
-{
-    pjsua_acc_config accountConfig;
-    pjsua_acc_config_default(&accountConfig);
-
-    accountConfig.id = pj_str(sipUrl.data());
-    accountConfig.reg_uri = pj_str(registrationUri.data());
-
-    accountConfig.proxy_cnt = proxys.size();
-    for(int i = 0; i < proxys.size(); ++i) {
-        QByteArray proxy = proxys.at(i);
-        accountConfig.proxy[i] = pj_str(proxy.data());
-    }
-
-    accountConfig.cred_count = credentials.size();
-    for(int i = 0; i < credentials.size(); ++i) {
-        AccountCredential credential = credentials.at(i);
-        accountConfig.cred_info[i].realm = pj_str(credential.realm.data());
-        accountConfig.cred_info[i].scheme = pj_str(credential.scheme.data());
-        accountConfig.cred_info[i].username = pj_str(credential.username.data());
-        accountConfig.cred_info[i].data_type = credential.type;
-        accountConfig.cred_info[i].data = pj_str(credential.password.data());
-    }
-    pjsua_acc_id account_id;
-
-    return pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id);
-}
-
-
 
 AccountCredential::AccountCredential()
     : realm(""), scheme(""), username(""), password(""), type(0)

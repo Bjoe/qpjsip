@@ -5,7 +5,7 @@
 #include <QByteArray>
 #include <QList>
 
-#include "pjsua.h"
+#include "engine.h"
 
 namespace qpjsua {
 
@@ -19,7 +19,6 @@ public:
     AccountConfiguration &withRegistrationUri(const QString &anUri);
     AccountConfiguration &addProxy(const QString &aProxyUrl);
     AccountConfiguration &addCredential(const AccountCredential aCredential);
-    pj_status_t create();
 
 private:
     QByteArray sipUrl;
@@ -28,6 +27,8 @@ private:
     QList<AccountCredential> credentials;
 
     AccountConfiguration();
+
+    friend class Engine;
 };
 
 class AccountCredential
@@ -49,7 +50,7 @@ private:
 
     AccountCredential();
 
-    friend class AccountConfiguration;
+    friend class Engine;
 };
 
 

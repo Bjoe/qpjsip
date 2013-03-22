@@ -37,8 +37,14 @@ Engine Engine::create(const LoggingConfiguration &aLoggingConfiguration, const M
     config.cb.on_reg_started = &on_reg_started;
     config.cb.on_transport_state = &on_transport_state;
 
-    pjsua_logging_config loggingConfig = aLoggingConfiguration.getPjsuaLoggingConfig();
-    pjsua_media_config mediaConfig = aMediaConfiguration.getPjsuaMediaConfig();
+    pjsua_logging_config loggingConfig;
+    pjsua_logging_config_default(&loggingConfig);
+    loggingConfig.console_level = aLoggingConfiguration.consoleLevel;
+
+    pjsua_media_config mediaConfig;
+    pjsua_media_config_default(&mediaConfig);
+    aMediaConfiguration;
+
     status = pjsua_init(&config, &loggingConfig, &mediaConfig);
     if(status != PJ_SUCCESS) {
         qDebug() << "Error init pjsua " << status;
@@ -51,7 +57,12 @@ Engine Engine::create(const LoggingConfiguration &aLoggingConfiguration, const M
 
 void Engine::start(const TransportConfiguration &aTransportConfiguration) const
 {
-    pj_status_t status = aTransportConfiguration.create();
+    pjsua_transport_config transportConfig;
+    pjsua_transport_config_default(&transportConfig);
+
+    transportConfig.port = aTransportConfiguration.port;
+
+    pj_status_t status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL);
     if(status != PJ_SUCCESS) {
         qDebug() << "Error transport pjsua " << status;
         pjsua_destroy();
@@ -71,7 +82,31 @@ void Engine::start(const TransportConfiguration &aTransportConfiguration) const
 
 void Engine::addAccount(AccountConfiguration &anAccountConfiguration) const
 {
-    pj_status_t status = anAccountConfiguration.create();
+    pjsua_acc_config accountConfig;
+    pjsua_acc_config_default(&accountConfig);
+
+    accountConfig.id = pj_str(anAccountConfiguration.sipUrl.data());
+    accountConfig.reg_uri = pj_str(anAccountConfiguration.registrationUri.data());
+
+    accountConfig.proxy_cnt = anAccountConfiguration.proxys.size();
+    for(int i = 0; i < anAccountConfiguration.proxys.size(); ++i) {
+        QByteArray proxy = anAccountConfiguration.proxys.at(i); // TODO is a copy ?
+        accountConfig.proxy[i] = pj_str(proxy.data());
+    }
+
+    accountConfig.cred_count = anAccountConfiguration.credentials.size();
+    for(int i = 0; i < anAccountConfiguration.credentials.size(); ++i) {
+        AccountCredential credential = anAccountConfiguration.credentials.at(i);
+        accountConfig.cred_info[i].realm = pj_str(credential.realm.data());
+        accountConfig.cred_info[i].scheme = pj_str(credential.scheme.data());
+        accountConfig.cred_info[i].username = pj_str(credential.username.data());
+        accountConfig.cred_info[i].data_type = credential.type;
+        accountConfig.cred_info[i].data = pj_str(credential.password.data());
+    }
+    pjsua_acc_id account_id;
+
+    pj_status_t status = pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id);
+
     if(status != PJ_SUCCESS) {
         qDebug() << "Error pjsua account add " << status;
         pjsua_destroy();

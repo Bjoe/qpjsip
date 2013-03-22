@@ -10,6 +10,11 @@
 
 namespace qpjsua {
 
+class AccountConfiguration;
+class LoggingConfiguration;
+class MediaConfiguration;
+class TransportConfiguration;
+
 class Engine
 {
 public:

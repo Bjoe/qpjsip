@@ -2,9 +2,8 @@
 
 namespace qpjsua {
 
-TransportConfiguration::TransportConfiguration() : configuration()
+TransportConfiguration::TransportConfiguration() : port(0)
 {
-    pjsua_transport_config_default(&configuration);
 }
 
 TransportConfiguration TransportConfiguration::build()
@@ -14,13 +13,8 @@ TransportConfiguration TransportConfiguration::build()
 
 TransportConfiguration &TransportConfiguration::withPort(int aPort)
 {
-    configuration.port = aPort;
+    port = aPort;
     return *this;
-}
-
-pj_status_t TransportConfiguration::create() const
-{
-    return pjsua_transport_create(PJSIP_TRANSPORT_UDP, &configuration, NULL);
 }
 
 } // namespace qpjsua
