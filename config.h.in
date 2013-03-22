@@ -1,0 +1,6 @@
+
+// the configured options and settings
+
+#define PROJECT_VERSION_MAJOR @Project_VERSION_MAJOR@
+#define PROJECT_VERSION_MINOR @Project_VERSION_MINOR@
+#define PROJECT_VERSION_PATCH @Project_VERSION_PATCH@
