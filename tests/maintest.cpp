@@ -24,25 +24,22 @@ int main(int argc, char *argv[])
 
     MediaConfiguration mediaConfiguration = MediaConfiguration::build();
 
+    AccountCredential credential = AccountCredential::build()
+            .withRealm("*")
+            .withScheme("Digest")
+            .withUsername("XXXXXX")
+            .withPasswordType(PJSIP_TRANSPORT_UDP)
+            .withPassword("XXXXX");
+    AccountConfiguration accountConfiguration = AccountConfiguration::build()
+            .withRegistrationUri("sip:reg.de")
+            .withSipUrl("sip:foo@reg.de")
+            .addCredential(credential)
+            .addProxy("sip:proxy.de");
+
 
 
     Engine engine = Engine::create(loggingConfiguration, mediaConfiguration);
     engine.start(transportConfiguration);
-
-
-    AccountCredential credential = AccountCredential::build()
-            .withRealm("*")
-            .withScheme("Digest")
-            .withUsername("1551930e12")
-            .withPasswordType(PJSIP_TRANSPORT_UDP)
-            .withPassword("K6I0QC");
-    AccountConfiguration accountConfiguration = AccountConfiguration::build()
-            .withRegistrationUri("sip:sipgate.de")
-            .withSipUrl("sip:1551930e12@sipgate.de")
-            .addCredential(credential)
-            .addProxy("sip:proxy.live.sipgate.de");
-
-
     engine.addAccount(accountConfiguration);
 
 

@@ -69,7 +69,7 @@ void Engine::start(const TransportConfiguration &aTransportConfiguration) const
 
 }
 
-void Engine::addAccount(const AccountConfiguration &anAccountConfiguration) const
+void Engine::addAccount(AccountConfiguration &anAccountConfiguration) const
 {
     pj_status_t status = anAccountConfiguration.create();
     if(status != PJ_SUCCESS) {
@@ -80,13 +80,9 @@ void Engine::addAccount(const AccountConfiguration &anAccountConfiguration) cons
     qDebug() << QString("pjsua account"); // add %1").arg(account_id);
 }
 
-
+/*
 void Engine::init()
 {
-    QString sipUser("xxxxxxx");
-    QString sipDomain("xxxxx");
-    QString sipPassword("xxxxx");
-    QString sipProxy("xxxxxxxxxxxxxx");
     int port = 5060;
 
     pj_status_t status = pjsua_create();
@@ -142,6 +138,10 @@ void Engine::init()
     }
     qDebug() << "pjsua started";
 
+    QString sipUser("xxxxxxx");
+    QString sipDomain("xxxxx");
+    QString sipPassword("xxxxx");
+    QString sipProxy("xxxxxxxxxxxxxx");
     QByteArray id = QString("sip:%1@%2").arg(sipUser).arg(sipDomain).toLatin1();
     QByteArray uri = QString("sip:%1").arg(sipDomain).toLatin1();
     QByteArray realm = sipDomain.toLatin1();
@@ -173,7 +173,7 @@ void Engine::init()
     }
     qDebug() << QString("pjsua account add %1").arg(account_id);
 }
-
+*/
 void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
 {
     pjsua_call_info callInfo;

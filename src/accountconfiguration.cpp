@@ -4,29 +4,10 @@
 
 namespace qpjsua {
 
-char *convert(const QString &aString)
+AccountConfiguration::AccountConfiguration()
+    : sipUrl(""), registrationUri(""),
+      proxys(), credentials()
 {
-    QByteArray bytes = aString.toLatin1();
-    char *config = bytes.data();
-    int sleng = strlen(config)+1;
-    char *ret = new char[sleng];
-    memcpy(ret, config, sleng);
-    return ret;
-}
-
-pjsip_cred_info getCredential(AccountCredential anAccountCredential)
-{
-    return anAccountCredential.credential;
-}
-
-AccountConfiguration::AccountConfiguration() : configuration()
-{
-    pjsua_acc_config_default(&configuration);
-}
-
-AccountConfiguration::~AccountConfiguration()
-{
-    //free(accountConfiguration);
 }
 
 AccountConfiguration AccountConfiguration::build()
@@ -36,45 +17,61 @@ AccountConfiguration AccountConfiguration::build()
 
 AccountConfiguration &AccountConfiguration::withSipUrl(const QString &aSipUrl)
 {
-    configuration.id = pj_str(convert(aSipUrl));
+    sipUrl = aSipUrl.toLatin1();
     return *this;
 }
 
 AccountConfiguration &AccountConfiguration::withRegistrationUri(const QString &anUri)
 {
-    configuration.reg_uri = pj_str(convert(anUri));
+    registrationUri = anUri.toLatin1();
     return *this;
 }
 
 AccountConfiguration &AccountConfiguration::addProxy(const QString &aProxyUrl)
 {
-    int count = configuration.proxy_cnt++;
-    configuration.proxy[count] = pj_str(convert(aProxyUrl));
+    proxys.append(aProxyUrl.toLatin1());
     return *this;
 }
 
 AccountConfiguration &AccountConfiguration::addCredential(const AccountCredential aCredential)
 {
-    int count = configuration.cred_count++;
-    configuration.cred_info[count] = getCredential(aCredential);
+    credentials.append(aCredential);
     return *this;
 }
 
-pj_status_t AccountConfiguration::create() const
+pj_status_t AccountConfiguration::create()
 {
-    pjsua_acc_id accountId; // TODO
-    return pjsua_acc_add(&configuration, PJ_TRUE, &accountId);
+    pjsua_acc_config accountConfig;
+    pjsua_acc_config_default(&accountConfig);
+
+    accountConfig.id = pj_str(sipUrl.data());
+    accountConfig.reg_uri = pj_str(registrationUri.data());
+
+    accountConfig.proxy_cnt = proxys.size();
+    for(int i = 0; i < proxys.size(); ++i) {
+        QByteArray proxy = proxys.at(i);
+        accountConfig.proxy[i] = pj_str(proxy.data());
+    }
+
+    accountConfig.cred_count = credentials.size();
+    for(int i = 0; i < credentials.size(); ++i) {
+        AccountCredential credential = credentials.at(i);
+        accountConfig.cred_info[i].realm = pj_str(credential.realm.data());
+        accountConfig.cred_info[i].scheme = pj_str(credential.scheme.data());
+        accountConfig.cred_info[i].username = pj_str(credential.username.data());
+        accountConfig.cred_info[i].data_type = credential.type;
+        accountConfig.cred_info[i].data = pj_str(credential.password.data());
+    }
+    pjsua_acc_id account_id;
+
+    return pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id);
 }
 
 
 
-AccountCredential::AccountCredential() : credential()
+AccountCredential::AccountCredential()
+    : realm(""), scheme(""), username(""), password(""), type(0)
 {}
-
-AccountCredential::~AccountCredential()
-{
-    //delete credential;
-}
 
 AccountCredential AccountCredential::build()
 {
@@ -83,31 +80,31 @@ AccountCredential AccountCredential::build()
 
 AccountCredential &AccountCredential::withRealm(const QString &aRealm)
 {
-    credential.realm = pj_str(convert(aRealm));
+    realm = aRealm.toLatin1();
     return *this;
 }
 
 AccountCredential &AccountCredential::withScheme(const QString &aScheme)
 {
-    credential.scheme = pj_str(convert(aScheme));
+    scheme = aScheme.toLatin1();
     return *this;
 }
 
 AccountCredential &AccountCredential::withUsername(const QString &anUsername)
 {
-    credential.username = pj_str(convert(anUsername));
+    username = anUsername.toLatin1();
     return *this;
 }
 
 AccountCredential &AccountCredential::withPasswordType(int aType)
 {
-    credential.data_type = aType;
+    type = aType;
     return *this;
 }
 
 AccountCredential &AccountCredential::withPassword(const QString &aPassword)
 {
-    credential.data = pj_str(convert(aPassword));
+    password = aPassword.toLatin1();
     return *this;
 }
 

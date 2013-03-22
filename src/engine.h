@@ -17,9 +17,9 @@ public:
 
     static Engine create(const LoggingConfiguration &aLoggingConfiguration, const MediaConfiguration &aMediaConfiguration);
     void start(const TransportConfiguration &aTransportConfiguration) const;
-    void addAccount(const AccountConfiguration &anAccountConfiguration) const;
+    void addAccount(AccountConfiguration &anAccountConfiguration) const;
 
-    void init();
+    //void init();
 
 private:
     static void on_call_state(pjsua_call_id call_id, pjsip_event *event);

@@ -2,6 +2,9 @@
 #define QPJSUA_ACCOUNTCONFIGURATION_H
 
 #include <QString>
+#include <QByteArray>
+#include <QList>
+
 #include "pjsua.h"
 
 namespace qpjsua {
@@ -16,11 +19,13 @@ public:
     AccountConfiguration &withRegistrationUri(const QString &anUri);
     AccountConfiguration &addProxy(const QString &aProxyUrl);
     AccountConfiguration &addCredential(const AccountCredential aCredential);
-    pj_status_t create() const;
+    pj_status_t create();
 
-    ~AccountConfiguration();
 private:
-    pjsua_acc_config configuration;
+    QByteArray sipUrl;
+    QByteArray registrationUri;
+    QList<QByteArray> proxys;
+    QList<AccountCredential> credentials;
 
     AccountConfiguration();
 };
@@ -35,13 +40,16 @@ public:
     AccountCredential &withPasswordType(int aType);
     AccountCredential &withPassword(const QString &aPassword);
 
-    ~AccountCredential();
 private:
-    pjsip_cred_info credential;
+    QByteArray realm;
+    QByteArray scheme;
+    QByteArray username;
+    QByteArray password;
+    int type;
 
     AccountCredential();
 
-    friend pjsip_cred_info getCredential(AccountCredential anAccountCredential);
+    friend class AccountConfiguration;
 };
 
 
