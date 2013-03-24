@@ -14,6 +14,7 @@ set(QT_SRCS
     loggingconfiguration.cpp
     mediaconfiguration.cpp
     transportconfiguration.cpp
+    pjerror.cpp
 )
 
 # configure a header file to pass some of the CMake settings

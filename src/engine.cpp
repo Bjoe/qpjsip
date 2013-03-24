@@ -3,12 +3,9 @@
 #include <QString>
 #include <QByteArray>
 
-#include <QDebug>
-
-
 namespace qpjsua {
 
-Engine::Engine()
+Engine::Engine() : error(), status(PJ_SUCCESS)
 {
 }
 
@@ -47,13 +44,9 @@ Engine Engine::Builder::build() const
 {
     Engine engine;
 
-    pj_status_t status = pjsua_create();
-    if(status != PJ_SUCCESS) {
-        qDebug() << "Error create pjsua " << status;
-        pjsua_destroy();
+    if(engine.checkStatus("pjsua create", pjsua_create()) == false) {
         return engine;
     }
-    qDebug() << "pjsua create";
 
     pjsua_config config;
     pjsua_config_default(&config);
@@ -71,37 +64,25 @@ Engine Engine::Builder::build() const
     pjsua_media_config mediaConfig;
     pjsua_media_config_default(&mediaConfig);
 
-    status = pjsua_init(&config, &loggingConfig, &mediaConfig);
-    if(status != PJ_SUCCESS) {
-        qDebug() << "Error init pjsua " << status;
-        pjsua_destroy();
+    if(engine.checkStatus("pjsua init", pjsua_init(&config, &loggingConfig, &mediaConfig)) == false) {
         return engine;
     }
-    qDebug() << "pjsua init";
 
     pjsua_transport_config transportConfig;
     pjsua_transport_config_default(&transportConfig);
 
     transportConfig.port = transportConfiguration.getPort();
 
-    status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL);
-    if(status != PJ_SUCCESS) {
-        qDebug() << "Error transport pjsua " << status;
-        pjsua_destroy();
+    if(engine.checkStatus("pjsua transport", pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL)) == false) {
         return engine;
     }
-    qDebug() << "pjsua transport create";
 
-    status = pjsua_start();
-    if(status != PJ_SUCCESS) {
-        qDebug() << "Error start pjsua " << status;
-        pjsua_destroy();
+    if(engine.checkStatus("pjsual start", pjsua_start()) == false) {
         return engine;
     }
-    qDebug() << "pjsua started";
 }
 
-void Engine::addAccount(AccountConfiguration &anAccountConfiguration) const
+void Engine::addAccount(AccountConfiguration &anAccountConfiguration)
 {
     pjsua_acc_config accountConfig;
     pjsua_acc_config_default(&accountConfig);
@@ -126,14 +107,32 @@ void Engine::addAccount(AccountConfiguration &anAccountConfiguration) const
     }
     pjsua_acc_id account_id;
 
-    pj_status_t status = pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id);
-
-    if(status != PJ_SUCCESS) {
-        qDebug() << "Error pjsua account add " << status;
-        pjsua_destroy();
+    if(checkStatus("Add account", pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id)) == false) {
         return;
     }
-    qDebug() << QString("pjsua account"); // add %1").arg(account_id);
+}
+
+bool Engine::isValid() const
+{
+    return status == PJ_SUCCESS;
+}
+
+PjError Engine::lastError() const
+{
+    return error;
+}
+
+bool Engine::checkStatus(const QString &aMessage, pj_status_t aStatus)
+{
+    bool ret = true;
+    status = aStatus;
+    if(aStatus != PJ_SUCCESS) {
+        pjsua_destroy();
+        error.setStatus(aStatus);
+        error.setMessage(QString("%1 failed.").arg(aMessage));
+        ret = false;
+    }
+    return ret;
 }
 
 
@@ -148,22 +147,18 @@ void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_
     pjsua_call_info callInfo;
     pjsua_call_get_info(call_id, &callInfo);
 
-    qDebug() << QString("Incoming call from %1").arg(callInfo.state_text.ptr, callInfo.state_text.slen);
 }
 
 void Engine::on_call_media_state(pjsua_call_id call_id)
 {
-    qDebug() << QString("on_call_media call_id %1").arg(call_id);
 }
 
 void Engine::on_reg_started(pjsua_acc_id acc_id, pj_bool_t renew)
 {
-    qDebug() << QString("on_reg_started acc_id %1").arg(acc_id);
 }
 
 void Engine::on_transport_state(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info)
 {
-    qDebug() << QString("on_transport_state state %1").arg(state);
 }
 
 } // namespace qpjsua

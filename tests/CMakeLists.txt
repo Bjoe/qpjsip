@@ -32,6 +32,7 @@ qt_test(accountConfiguration accountconfigurationtest.cpp)
 qt_test(loggingConfiguration loggingconfigurationtest.cpp)
 qt_test(mediaConfiguration mediaconfigurationtest.cpp)
 qt_test(transportConfiguration transportconfigurationtest.cpp)
+qt_test(pjerror pjerrortest.cpp)
 
 #qt4_wrap_cpp(MOC_OUTFILES output.h)
 add_executable(qpjsuaTest maintest.cpp) # output.cpp ${MOC_OUTFILES})
