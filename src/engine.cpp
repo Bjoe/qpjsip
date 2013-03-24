@@ -5,13 +5,16 @@
 
 namespace qpjsua {
 
-Engine::Engine() : error(), status(PJ_SUCCESS)
+static Engine *instance = 0;
+
+Engine::Engine(QObject *parent) : QObject(parent), error(), status(PJ_SUCCESS)
 {
 }
 
 Engine::~Engine()
 {
-    //pjsua_destroy();
+    pjsua_destroy();
+    instance = 0;
 }
 
 Engine::Builder Engine::Builder::create()
@@ -40,11 +43,12 @@ Engine::Builder &Engine::Builder::withTransportConfiguration(const TransportConf
     transportConfiguration = aTransportConfiguration;
 }
 
-Engine Engine::Builder::build() const
+Engine *Engine::Builder::build(QObject *parent) const
 {
-    Engine engine;
+    Engine *engine = new Engine(parent);
+    instance = engine;
 
-    if(engine.checkStatus("pjsua create", pjsua_create()) == false) {
+    if(engine->checkStatus("pjsua create", pjsua_create()) == false) {
         return engine;
     }
 
@@ -59,12 +63,17 @@ Engine Engine::Builder::build() const
 
     pjsua_logging_config loggingConfig;
     pjsua_logging_config_default(&loggingConfig);
+    loggingConfig.decor = loggingConfig.decor & ~PJ_LOG_HAS_NEWLINE;
     loggingConfig.console_level = loggingConfiguration.getConsoleLevel();
-
+    loggingConfig.cb = &logger_callback_wrapper;
+    const QObject *receiver = loggingConfiguration.getReceiver();
+    if(receiver) {
+        receiver->connect(engine, SIGNAL(log(int,QString)), loggingConfiguration.getMember(), Qt::QueuedConnection);
+    }
     pjsua_media_config mediaConfig;
     pjsua_media_config_default(&mediaConfig);
 
-    if(engine.checkStatus("pjsua init", pjsua_init(&config, &loggingConfig, &mediaConfig)) == false) {
+    if(engine->checkStatus("pjsua init", pjsua_init(&config, &loggingConfig, &mediaConfig)) == false) {
         return engine;
     }
 
@@ -73,13 +82,14 @@ Engine Engine::Builder::build() const
 
     transportConfig.port = transportConfiguration.getPort();
 
-    if(engine.checkStatus("pjsua transport", pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL)) == false) {
+    if(engine->checkStatus("pjsua transport", pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL)) == false) {
         return engine;
     }
 
-    if(engine.checkStatus("pjsual start", pjsua_start()) == false) {
+    if(engine->checkStatus("pjsual start", pjsua_start()) == false) {
         return engine;
     }
+    return engine;
 }
 
 void Engine::addAccount(AccountConfiguration &anAccountConfiguration)
@@ -135,6 +145,18 @@ bool Engine::checkStatus(const QString &aMessage, pj_status_t aStatus)
     return ret;
 }
 
+void Engine::logger_callback_wrapper(int level, const char *data, int len)
+{
+    if(instance) {
+        instance->logger_callback(level, data, len);
+    }
+}
+
+void Engine::logger_callback(int level, const char *data, int len)
+{
+    Q_UNUSED(len);
+    emit log(level, data);
+}
 
 void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
 {

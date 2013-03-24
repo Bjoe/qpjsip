@@ -2,7 +2,7 @@
 
 namespace qpjsua {
 
-LoggingConfiguration::LoggingConfiguration() : consoleLevel(0)
+LoggingConfiguration::LoggingConfiguration() : receiver(0), member(0), consoleLevel(0)
 {
 }
 
@@ -15,6 +15,22 @@ LoggingConfiguration &LoggingConfiguration::withConsoleLevel(int aLevel)
 {
     consoleLevel = aLevel;
     return *this;
+}
+
+LoggingConfiguration &LoggingConfiguration::withLogOutput(const QObject *aReceiver, const char *aMember)
+{
+    receiver = aReceiver;
+    member = aMember;
+}
+
+const QObject *LoggingConfiguration::getReceiver() const
+{
+    return receiver;
+}
+
+const char *LoggingConfiguration::getMember() const
+{
+    return member;
 }
 
 int LoggingConfiguration::getConsoleLevel() const

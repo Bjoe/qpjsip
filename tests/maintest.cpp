@@ -1,11 +1,11 @@
 
 #include <QCoreApplication>
-#include <QString>
-#include <QByteArray>
-#include <iostream>
+
 #include <pjsua-lib/pjsua.h>
 
 #include "config.h"
+
+#include "output.h"
 
 #include "pjerror.h"
 #include "engine.h"
@@ -16,22 +16,14 @@
 
 using namespace qpjsua;
 
-void output(const PjError &anError, const QString &aMessage)
-{
-    QByteArray output = aMessage.toLatin1();
-    if(anError.getStatus() != PJ_SUCCESS) {
-        output = QString("%1 Code: %2").arg(anError.getMessage()).arg(anError.getStatus()).toLatin1();
-    }
-    std::cout << output.constData() << std::endl;
-}
-
-
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+    tests::Output *output = new tests::Output();
 
     LoggingConfiguration loggingConfiguration = LoggingConfiguration::build()
-            .withConsoleLevel(4);
+            .withConsoleLevel(4)
+            .withLogOutput(output, SLOT(onLog(int,QString)));
 
     TransportConfiguration transportConfiguration = TransportConfiguration::build()
             .withPort(5060);
@@ -50,21 +42,21 @@ int main(int argc, char *argv[])
             .addCredential(credential)
             .addProxy("sip:proxy.de");
 
-    Engine engine = Engine::Builder::create()
+    Engine *engine = Engine::Builder::create()
             .withLoggingConfiguration(loggingConfiguration)
             .withMediaConfiguration(mediaConfiguration)
             .withTransportConfiguration(transportConfiguration)
             .build();
 
-    output(engine.lastError(), "Create Engine");
-    if(engine.isValid() == false) {
+    output->out(engine->lastError(), "Create Engine");
+    if(engine->isValid() == false) {
         return 1;
     }
 
-    engine.addAccount(accountConfiguration);
+    engine->addAccount(accountConfiguration);
 
-    output(engine.lastError(), "Add account");
-    if(engine.isValid() == false) {
+    output->out(engine->lastError(), "Add account");
+    if(engine->isValid() == false) {
         return 1;
     }
 

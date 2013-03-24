@@ -1,14 +1,13 @@
 
 set(QT_MOC_HEADERS
-#    mainwindow.h
+    engine.h
 )
 
-set(QT_UI
+#set(QT_UI
 #    mainwindow.ui
-)
+#)
 
 set(QT_SRCS
-#    mainwindow.cpp
     engine.cpp
     accountconfiguration.cpp
     loggingconfiguration.cpp

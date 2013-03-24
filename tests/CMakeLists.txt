@@ -34,6 +34,7 @@ qt_test(mediaConfiguration mediaconfigurationtest.cpp)
 qt_test(transportConfiguration transportconfigurationtest.cpp)
 qt_test(pjerror pjerrortest.cpp)
 
-#qt4_wrap_cpp(MOC_OUTFILES output.h)
-add_executable(qpjsuaTest maintest.cpp) # output.cpp ${MOC_OUTFILES})
+# Maintest
+qt4_wrap_cpp(MOC_OUTFILES output.h)
+add_executable(qpjsuaTest maintest.cpp output.cpp ${MOC_OUTFILES})
 target_link_libraries(qpjsuaTest qpjsua ${PJSIP_LIBRARIES} ${QT_LIBRARIES})
