@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QString>
-
 #include <pjsua-lib/pjsua.h>
 
 #include "loggingconfiguration.h"
@@ -21,6 +20,7 @@ class TransportConfiguration;
 class Engine : public QObject
 {
     Q_OBJECT
+
 public:
     ~Engine();
 
@@ -31,6 +31,10 @@ public:
 
 signals:
     void log(int level, QString message);
+    void incomingCall(pjsua_acc_id accountId, pjsua_call_id callId);
+    void callState(pjsua_call_id callId);
+    void callMediaState(pjsua_call_id callId);
+    void regStarted(pjsua_acc_id accountId, bool renew);
 
 private:
     PjError error;
@@ -38,14 +42,17 @@ private:
     bool checkStatus(const QString &aMessage, pj_status_t aStatus);
 
     static void logger_callback_wrapper(int level, const char *data, int len);
-    static void on_call_state(pjsua_call_id call_id, pjsip_event *event);
-    static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
-    static void on_call_media_state(pjsua_call_id call_id);
-    static void on_reg_started(pjsua_acc_id acc_id, pj_bool_t renew);
-    static void on_transport_state(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info);
+    static void on_call_state_wrapper(pjsua_call_id call_id, pjsip_event *event);
+    static void on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
+    static void on_call_media_state_wrapper(pjsua_call_id call_id);
+    static void on_reg_started_wrapper(pjsua_acc_id acc_id, pj_bool_t renew);
+    static void on_transport_state_wrapper(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info);
 
     void logger_callback(int level, const char *data, int len);
-
+    void on_call_state(pjsua_call_id call_id, pjsip_event *event);
+    void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
+    void on_call_media_state(pjsua_call_id call_id);
+    void on_reg_started(pjsua_acc_id acc_id, pj_bool_t renew);
 
     Engine(QObject *parent);
 

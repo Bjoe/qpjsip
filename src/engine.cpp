@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include <QMetaType>
 #include <QString>
 #include <QByteArray>
 
@@ -13,6 +14,7 @@ Engine::Engine(QObject *parent) : QObject(parent), error(), status(PJ_SUCCESS)
 
 Engine::~Engine()
 {
+    pjsua_call_hangup_all();
     pjsua_destroy();
     instance = 0;
 }
@@ -45,6 +47,9 @@ Engine::Builder &Engine::Builder::withTransportConfiguration(const TransportConf
 
 Engine *Engine::Builder::build(QObject *parent) const
 {
+    qRegisterMetaType<pjsua_acc_id>("pjsua_acc_id");
+    qRegisterMetaType<pjsua_call_id>("pjsua_call_id");
+
     Engine *engine = new Engine(parent);
     instance = engine;
 
@@ -55,11 +60,11 @@ Engine *Engine::Builder::build(QObject *parent) const
     pjsua_config config;
     pjsua_config_default(&config);
 
-    config.cb.on_incoming_call = &on_incoming_call;
-    config.cb.on_call_state = &on_call_state;
-    config.cb.on_call_media_state = &on_call_media_state;
-    config.cb.on_reg_started = &on_reg_started;
-    config.cb.on_transport_state = &on_transport_state;
+    config.cb.on_incoming_call = &on_incoming_call_wrapper;
+    config.cb.on_call_state = &on_call_state_wrapper;
+    config.cb.on_call_media_state = &on_call_media_state_wrapper;
+    config.cb.on_reg_started = &on_reg_started_wrapper;
+    config.cb.on_transport_state = &on_transport_state_wrapper;
 
     pjsua_logging_config loggingConfig;
     pjsua_logging_config_default(&loggingConfig);
@@ -158,28 +163,61 @@ void Engine::logger_callback(int level, const char *data, int len)
     emit log(level, data);
 }
 
+void Engine::on_call_state_wrapper(pjsua_call_id call_id, pjsip_event *event)
+{
+    if(instance) {
+        instance->on_call_state(call_id, event);
+    }
+}
+
 void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
 {
-    pjsua_call_info callInfo;
-    pjsua_call_get_info(call_id, &callInfo);
+    Q_UNUSED(event);
+    emit callState(call_id);
+}
+
+void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
+{
+    if(instance) {
+        instance->on_incoming_call(acc_id, call_id, rdata);
+    }
 }
 
 void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
-    pjsua_call_info callInfo;
-    pjsua_call_get_info(call_id, &callInfo);
+    Q_UNUSED(rdata);
+    emit(acc_id, call_id);
+}
 
+void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
+{
+    if(instance) {
+        instance->on_call_media_state(call_id);
+    }
 }
 
 void Engine::on_call_media_state(pjsua_call_id call_id)
 {
+    emit callMediaState(call_id);
+}
+
+void Engine::on_reg_started_wrapper(pjsua_acc_id acc_id, pj_bool_t renew)
+{
+    if(instance) {
+        instance->on_reg_started(acc_id, renew);
+    }
 }
 
 void Engine::on_reg_started(pjsua_acc_id acc_id, pj_bool_t renew)
 {
+    bool _renew = false;
+    if(renew == PJ_TRUE) {
+        _renew = true;
+    }
+    emit regStarted(acc_id, _renew);
 }
 
-void Engine::on_transport_state(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info)
+void Engine::on_transport_state_wrapper(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info)
 {
 }
 
