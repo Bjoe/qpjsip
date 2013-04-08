@@ -26,4 +26,4 @@ void MediaConfigurationTest::testBuild()
 }
 
 QTEST_MAIN(tests::MediaConfigurationTest)
-#include "moc_mediaconfigurationtest.cxx"
+#include "moc_mediaconfigurationtest.cpp"

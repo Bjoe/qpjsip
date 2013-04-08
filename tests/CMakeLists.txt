@@ -5,8 +5,19 @@ endif(CMAKE_CROSSCOMPILING)
 
 find_package(QtTestUtil)
 
-find_package(Qt4 4.8  REQUIRED QtTest)
-include(${QT_USE_FILE})
+if(${QT5})
+    # Instruct CMake to run moc automatically when needed.
+    set(CMAKE_AUTOMOC OFF)
+
+    # cmake example from http://qt-project.org/doc/qt-5.0/qtdoc/cmake-manual.html
+    find_package(Qt5Test)
+
+else(${QT5})
+
+    find_package(Qt4 4.8  REQUIRED QtTest)
+    include(${QT_USE_FILE})
+
+endif(${QT5})
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -35,6 +46,14 @@ qt_test(transportConfiguration transportconfigurationtest.cpp)
 qt_test(pjerror pjerrortest.cpp)
 
 # Maintest
-qt4_wrap_cpp(MOC_OUTFILES output.h)
-add_executable(qpjsuaTest maintest.cpp output.cpp ${MOC_OUTFILES})
+if(${QT5})
+    qt5_wrap_cpp(MOC_OUTPUT output.h)
+else(${QT5})
+    qt4_wrap_cpp(MOC_OUTPUT output.h)
+endif(${QT5})
+add_executable(qpjsuaTest maintest.cpp output.cpp ${MOC_OUTPUT})
 target_link_libraries(qpjsuaTest qpjsua ${PJSIP_LIBRARIES} ${QT_LIBRARIES})
+
+if(${QT5})
+    qt5_use_modules(qpjsuaTest Core)
+endif(${QT5})

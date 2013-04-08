@@ -1,11 +1,16 @@
 
-set(QT_MOC_HEADERS
-    engine.h
-)
-
 #set(QT_UI
 #    mainwindow.ui
 #)
+
+if(NOT ${QT5})
+    set(QT_MOC_HEADERS
+        engine.h
+    )
+
+    qt4_wrap_cpp(MOC_OUTFILES ${QT_MOC_HEADERS})
+
+endif(NOT ${QT5})
 
 set(QT_SRCS
     engine.cpp
@@ -23,9 +28,8 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/config.h"
   )
 
-qt4_wrap_cpp(MOC_OUTFILES ${QT_MOC_HEADERS})
-
-# Die ui_xxxx.h files werden im CMAKE_CURRENT_BINARY_DIR erzeugt.
-#qt4_wrap_ui(UI_OUTFILES ${QT_UI})
-
 add_library(qpjsua STATIC ${QT_SRCS} ${UI_OUTFILES} ${MOC_OUTFILES})
+
+if(${QT5})
+    qt5_use_modules(qpjsua Core)
+endif(${QT5})

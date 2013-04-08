@@ -35,5 +35,5 @@ void PjErrorTest::testError()
 }
 
 QTEST_MAIN(tests::PjErrorTest)
-#include "moc_pjerrortest.cxx"
+#include "moc_pjerrortest.cpp"
 
