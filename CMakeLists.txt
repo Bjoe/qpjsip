@@ -79,7 +79,7 @@ export(PACKAGE QpjSip)
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
    "${INSTALL_INCLUDE_DIR}")
 # ... for the build tree
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src" "${PROJECT_BINARY_DIR}")
 configure_file(QpjSipConfig.cmake.in
   "${PROJECT_BINARY_DIR}/QpjSipConfig.cmake" @ONLY)
 # ... for the install tree
