@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
             .withLogOutput(output, SLOT(onLog(int,QString)));
 
     TransportConfiguration transportConfiguration = TransportConfiguration::build()
-            .withPort(5060);
+            .withPort(5160);
 
     MediaConfiguration mediaConfiguration = MediaConfiguration::build();
 
