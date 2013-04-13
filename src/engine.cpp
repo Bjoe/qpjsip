@@ -186,7 +186,7 @@ void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id
 void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
     Q_UNUSED(rdata);
-    emit(acc_id, call_id);
+    emit incomingCall(acc_id, call_id);
 }
 
 void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
