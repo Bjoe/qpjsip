@@ -9,6 +9,7 @@
 #include "output.h"
 
 #include "pjerror.h"
+#include "callinfo.h"
 #include "engine.h"
 #include "loggingconfiguration.h"
 #include "mediaconfiguration.h"
@@ -66,16 +67,16 @@ int main(int argc, char *argv[])
         return 1;
     }
     output->connect(engine,
-                    SIGNAL(incomingCall(pjsua_acc_id, pjsua_call_id)),
-                    SLOT(onIncomingCall(pjsua_acc_id, pjsua_call_id)),
+                    SIGNAL(incomingCall(pjsua_acc_id, qpjsua::CallInfo)),
+                    SLOT(onIncomingCall(pjsua_acc_id, qpjsua::CallInfo)),
                     Qt::QueuedConnection);
     output->connect(engine,
-                    SIGNAL(callState(pjsua_call_id)),
-                    SLOT(onCallState(pjsua_call_id)),
+                    SIGNAL(callState(qpjsua::CallInfo)),
+                    SLOT(onCallState(qpjsua::CallInfo)),
                     Qt::QueuedConnection);
     output->connect(engine,
-                    SIGNAL(callMediaState(pjsua_call_id)),
-                    SLOT(onCallMediaState(pjsua_call_id)),
+                    SIGNAL(callMediaState(qpjsua::CallInfo)),
+                    SLOT(onCallMediaState(qpjsua::CallInfo)),
                     Qt::QueuedConnection);
     output->connect(engine,
                     SIGNAL(regStarted(pjsua_acc_id, bool)),

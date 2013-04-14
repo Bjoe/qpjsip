@@ -10,6 +10,7 @@ static Engine *instance = 0;
 
 Engine::Engine(QObject *parent) : QObject(parent), error(), status(PJ_SUCCESS)
 {
+    qRegisterMetaType<qpjsua::CallInfo>("qpjsua::CallInfo");
 }
 
 Engine::~Engine()
@@ -173,7 +174,9 @@ void Engine::on_call_state_wrapper(pjsua_call_id call_id, pjsip_event *event)
 void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
 {
     Q_UNUSED(event);
-    emit callState(call_id);
+    pjsua_call_info call_Info;
+    pjsua_call_get_info(call_id, &call_Info);
+    emit callState(CallInfo(call_id, call_Info));
 }
 
 void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
@@ -186,7 +189,9 @@ void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id
 void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
     Q_UNUSED(rdata);
-    emit incomingCall(acc_id, call_id);
+    pjsua_call_info call_Info;
+    pjsua_call_get_info(call_id, &call_Info);
+    emit incomingCall(acc_id, CallInfo(call_id, call_Info));
 }
 
 void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
@@ -198,7 +203,9 @@ void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
 
 void Engine::on_call_media_state(pjsua_call_id call_id)
 {
-    emit callMediaState(call_id);
+    pjsua_call_info call_Info;
+    pjsua_call_get_info(call_id, &call_Info);
+    emit callMediaState(CallInfo(call_id, call_Info));
 }
 
 void Engine::on_reg_started_wrapper(pjsua_acc_id acc_id, pj_bool_t renew)

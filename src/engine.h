@@ -5,6 +5,7 @@
 #include <QString>
 #include <pjsua-lib/pjsua.h>
 
+#include "callinfo.h"
 #include "loggingconfiguration.h"
 #include "mediaconfiguration.h"
 #include "transportconfiguration.h"
@@ -31,9 +32,9 @@ public:
 
 signals:
     void log(int level, QString message);
-    void incomingCall(pjsua_acc_id accountId, pjsua_call_id callId);
-    void callState(pjsua_call_id callId);
-    void callMediaState(pjsua_call_id callId);
+    void incomingCall(pjsua_acc_id accountId, qpjsua::CallInfo call);
+    void callState(qpjsua::CallInfo call);
+    void callMediaState(qpjsua::CallInfo call);
     void regStarted(pjsua_acc_id accountId, bool renew);
 
 private:

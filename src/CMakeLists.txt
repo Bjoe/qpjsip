@@ -15,6 +15,7 @@ set(HEADERS
     mediaconfiguration.h
     transportconfiguration.h
     pjerror.h
+    callinfo.h
 )
 
 set(QT_SRCS
@@ -24,6 +25,7 @@ set(QT_SRCS
     mediaconfiguration.cpp
     transportconfiguration.cpp
     pjerror.cpp
+    callinfo.cpp
 )
 
 # configure a header file to pass some of the CMake settings

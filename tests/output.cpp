@@ -1,6 +1,7 @@
 #include "output.h"
 
 #include <QByteArray>
+#include <QTextStream>
 #include <iostream>
 
 namespace tests {
@@ -24,23 +25,23 @@ void Output::onLog(int level, QString message)
     std::cout << ">>> Log >>> Level " << level << " >>> " << message.toLatin1().constData() << std::endl;
 }
 
-void Output::onIncomingCall(pjsua_acc_id accountId, pjsua_call_id callId)
+void Output::onIncomingCall(pjsua_acc_id accountId, qpjsua::CallInfo aCallInfo)
 {
     std::cout << ">>> onIncomingCall <<< " << std::endl;
     accountInfoOut(accountId);
-    callInfoOut(callId);
+    callInfoOut(aCallInfo);
 }
 
-void Output::onCallState(pjsua_call_id callId)
+void Output::onCallState(qpjsua::CallInfo aCallInfo)
 {
     std::cout << ">>> onCallState <<< " << std::endl;
-    callInfoOut(callId);
+    callInfoOut(aCallInfo);
 }
 
-void Output::onCallMediaState(pjsua_call_id callId)
+void Output::onCallMediaState(qpjsua::CallInfo aCallInfo)
 {
     std::cout << ">>> onCallMediaState <<< " << std::endl;
-    callInfoOut(callId);
+    callInfoOut(aCallInfo);
 }
 
 void Output::onRegStarted(pjsua_acc_id accountId, bool renew)
@@ -50,38 +51,16 @@ void Output::onRegStarted(pjsua_acc_id accountId, bool renew)
     accountInfoOut(accountId);
 }
 
-void Output::callInfoOut(pjsua_call_id callId)
+void Output::callInfoOut(qpjsua::CallInfo aCallInfo)
 {
-    pjsua_call_info callInfo;
-    pjsua_call_get_info(callId, &callInfo);
-
-    const char *localInfo = pj_strbuf(&callInfo.local_info);
-    if(localInfo) {
-        std::cout << ">>> Local Info: " << localInfo << std::endl;
-    }
-
-    const char *localContact = pj_strbuf(&callInfo.local_contact);
-    if(localContact) {
-        std::cout << ">>> Local contact: " << localContact << std::endl;
-    }
-
-    const char *remoteInfo = pj_strbuf(&callInfo.remote_info);
-    if(remoteInfo) {
-        std::cout << ">>> Remote Info: " << remoteInfo << std::endl;
-    }
-
-    const char *remoteContact = pj_strbuf(&callInfo.remote_contact);
-    if(remoteContact) {
-        std::cout << ">>> Remote contact: " << remoteContact << std::endl;
-    }
-
-    const char *stateText = pj_strbuf(&callInfo.state_text);
-    if(stateText) {
-        std::cout << ">>> State Text: " << stateText << std::endl;
-    }
-
-    std::cout << ">>> Media status: " << callInfo.media_status << std::endl;
-    std::cout << ">>> State: " << callInfo.state << std::endl;
+    QTextStream out(stdout);
+    out << ">>> Local Info: " << aCallInfo.getLocalInfo() << "\n";
+    out << ">>> Local contact: " << aCallInfo.getLocalContact() << "\n";
+    out << ">>> Remote Info: " << aCallInfo.getRemoteInfo() << "\n";
+    out << ">>> Remote contact: " << aCallInfo.getRemoteContact() << "\n";
+    out << ">>> State Text: " << aCallInfo.getStateText() << "\n";
+    out << ">>> Media status: " << aCallInfo.getMediaStatus() << "\n";
+    out << ">>> State: " << aCallInfo.getInviteState() << "\n";
 }
 
 void Output::accountInfoOut(pjsua_acc_id accountId)

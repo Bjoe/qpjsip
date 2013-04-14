@@ -8,6 +8,8 @@
 
 #include "pjerror.h"
 
+#include "callinfo.h"
+
 namespace tests {
 
 class Output : public QObject
@@ -19,13 +21,13 @@ public:
 
 public slots:
     void onLog(int level, QString message);
-    void onIncomingCall(pjsua_acc_id accountId, pjsua_call_id callId);
-    void onCallState(pjsua_call_id callId);
-    void onCallMediaState(pjsua_call_id callId);
+    void onIncomingCall(pjsua_acc_id accountId, qpjsua::CallInfo aCallInfo);
+    void onCallState(qpjsua::CallInfo aCallInfo);
+    void onCallMediaState(qpjsua::CallInfo aCallInfo);
     void onRegStarted(pjsua_acc_id accountId, bool renew);
 
 private:
-    void callInfoOut(pjsua_call_id callId);
+    void callInfoOut(qpjsua::CallInfo aCallInfo);
     void accountInfoOut(pjsua_acc_id accountId);
 };
 
