@@ -12,7 +12,8 @@ public:
     CallInfo();
     CallInfo(pjsua_call_id aCallId, pjsua_call_info aCallInfo);
 
-    pjsua_call_id getCallId() const;
+    pjsua_call_id getId() const;
+    QString getCallId() const;
     QString getLocalInfo() const;
     QString getLocalContact() const;
     QString getRemoteInfo() const;

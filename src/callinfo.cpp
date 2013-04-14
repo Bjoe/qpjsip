@@ -10,9 +10,14 @@ CallInfo::CallInfo(pjsua_call_id aCallId, pjsua_call_info aCallInfo)
 {
 }
 
-pjsua_call_id CallInfo::getCallId() const
+pjsua_call_id CallInfo::getId() const
 {
     return callId;
+}
+
+QString CallInfo::getCallId() const
+{
+    return pj_strbuf(&callInfo.call_id);
 }
 
 QString CallInfo::getLocalInfo() const

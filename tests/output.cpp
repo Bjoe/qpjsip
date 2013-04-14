@@ -54,6 +54,7 @@ void Output::onRegStarted(pjsua_acc_id accountId, bool renew)
 void Output::callInfoOut(qpjsua::CallInfo aCallInfo)
 {
     QTextStream out(stdout);
+    out << ">>> Call-ID: " << aCallInfo.getCallId() << "\n";
     out << ">>> Local Info: " << aCallInfo.getLocalInfo() << "\n";
     out << ">>> Local contact: " << aCallInfo.getLocalContact() << "\n";
     out << ">>> Remote Info: " << aCallInfo.getRemoteInfo() << "\n";
