@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QTextStream>
 
 #include "pjsua-lib/pjsua.h"
 
@@ -30,6 +31,8 @@ public slots:
 private:
     void callInfoOut(qpjsua::CallInfo aCallInfo);
     void accountInfoOut(qpjsua::AccountInfo anAccountInfo);
+
+    QTextStream outStream;
 };
 
 } // namespace tests

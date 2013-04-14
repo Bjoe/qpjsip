@@ -1,81 +1,81 @@
 #include "output.h"
 
 #include <QByteArray>
-#include <QTextStream>
-#include <iostream>
 
 namespace tests {
 
 Output::Output(QObject *parent) :
-    QObject(parent)
+    QObject(parent), outStream(stdout)
 {
 }
 
 void Output::out(const qpjsua::PjError &anError, const QString &aMessage)
 {
-    QByteArray msg = aMessage.toLatin1();
+    QString message = aMessage;
     if(anError.getStatus() != PJ_SUCCESS) {
-        msg = QString("%1 Code: %2").arg(anError.getMessage()).arg(anError.getStatus()).toLatin1();
+        message = QString("%1 Code: %2").arg(anError.getMessage()).arg(anError.getStatus());
     }
-    std::cout << ">>> Output: " << msg.constData() << std::endl;
+    outStream << ">>> Output: " << message << "\n";
+    outStream.flush();
 }
 
 void Output::onLog(int level, QString message)
 {
-    std::cout << ">>> Log >>> Level " << level << " >>> " << message.toLatin1().constData() << std::endl;
+    outStream << ">>> Log >>> Level " << level << " >>> " << message << "\n";
+    outStream.flush();
 }
 
 void Output::onIncomingCall(qpjsua::AccountInfo anAccountInfo, qpjsua::CallInfo aCallInfo)
 {
-    std::cout << ">>> onIncomingCall <<< " << std::endl;
+    outStream << ">>> onIncomingCall <<< \n";
     accountInfoOut(anAccountInfo);
     callInfoOut(aCallInfo);
 }
 
 void Output::onCallState(qpjsua::CallInfo aCallInfo)
 {
-    std::cout << ">>> onCallState <<< " << std::endl;
+    outStream << ">>> onCallState <<< \n";
     callInfoOut(aCallInfo);
 }
 
 void Output::onCallMediaState(qpjsua::CallInfo aCallInfo)
 {
-    std::cout << ">>> onCallMediaState <<< " << std::endl;
+    outStream << ">>> onCallMediaState <<< \n";
     callInfoOut(aCallInfo);
 }
 
 void Output::onRegStarted(qpjsua::AccountInfo anAccountInfo, bool renew)
 {
     Q_UNUSED(renew);
-    std::cout << ">>> onRegStarted <<< " << std::endl;
+    outStream << ">>> onRegStarted <<< \n";
     accountInfoOut(anAccountInfo);
 }
 
 void Output::callInfoOut(qpjsua::CallInfo aCallInfo)
 {
-    QTextStream out(stdout);
-    out << ">>> Call-ID: " << aCallInfo.getCallId() << "\n";
-    out << ">>> Local Info: " << aCallInfo.getLocalInfo() << "\n";
-    out << ">>> Local contact: " << aCallInfo.getLocalContact() << "\n";
-    out << ">>> Remote Info: " << aCallInfo.getRemoteInfo() << "\n";
-    out << ">>> Remote contact: " << aCallInfo.getRemoteContact() << "\n";
-    out << ">>> State Text: " << aCallInfo.getStateText() << "\n";
-    out << ">>> Media status: " << aCallInfo.getMediaStatus() << "\n";
-    out << ">>> State: " << aCallInfo.getInviteState() << "\n";
+    outStream << ">>> Call-ID: " << aCallInfo.getCallId() << "\n";
+    outStream << ">>> Local Info: " << aCallInfo.getLocalInfo() << "\n";
+    outStream << ">>> Local contact: " << aCallInfo.getLocalContact() << "\n";
+    outStream << ">>> Remote Info: " << aCallInfo.getRemoteInfo() << "\n";
+    outStream << ">>> Remote contact: " << aCallInfo.getRemoteContact() << "\n";
+    outStream << ">>> State Text: " << aCallInfo.getStateText() << "\n";
+    outStream << ">>> Media status: " << aCallInfo.getMediaStatus() << "\n";
+    outStream << ">>> State: " << aCallInfo.getInviteState() << "\n";
+    outStream.flush();
 }
 
 void Output::accountInfoOut(qpjsua::AccountInfo anAccountInfo)
 {
-    QTextStream out(stdout);
     if(anAccountInfo.hasRegistartion()) {
-        out << ">>> Client is registered\n";
+        outStream << ">>> Client is registered\n";
     } else {
-        out << ">>> Client is not registered\n";
+        outStream << ">>> Client is not registered\n";
     }
 
-    out << ">>> Status Text: " << anAccountInfo.getStatusText() << "\n";
-    out << ">>> Status: " << anAccountInfo.getStatus() << "\n";
-    out << ">>> Reg last error: " << anAccountInfo.getLastError() << "\n";
+    outStream << ">>> Status Text: " << anAccountInfo.getStatusText() << "\n";
+    outStream << ">>> Status: " << anAccountInfo.getStatus() << "\n";
+    outStream << ">>> Reg last error: " << anAccountInfo.getLastError() << "\n";
+    outStream.flush();
 }
 
 } // namespace tests
