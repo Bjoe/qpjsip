@@ -44,7 +44,8 @@ qt_test(loggingConfiguration loggingconfigurationtest.cpp)
 qt_test(mediaConfiguration mediaconfigurationtest.cpp)
 qt_test(transportConfiguration transportconfigurationtest.cpp)
 qt_test(pjerror pjerrortest.cpp)
-qt_test(callinfo callinfotest.cpp)
+qt_test(callInfo callinfotest.cpp)
+qt_test(accountInfo accountinfotest.cpp)
 
 # Maintest
 if(${QT5})

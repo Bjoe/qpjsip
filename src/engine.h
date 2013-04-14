@@ -6,6 +6,7 @@
 #include <pjsua-lib/pjsua.h>
 
 #include "callinfo.h"
+#include "accountinfo.h"
 #include "loggingconfiguration.h"
 #include "mediaconfiguration.h"
 #include "transportconfiguration.h"
@@ -32,10 +33,10 @@ public:
 
 signals:
     void log(int level, QString message);
-    void incomingCall(pjsua_acc_id accountId, qpjsua::CallInfo call);
+    void incomingCall(qpjsua::AccountInfo account, qpjsua::CallInfo call);
     void callState(qpjsua::CallInfo call);
     void callMediaState(qpjsua::CallInfo call);
-    void regStarted(pjsua_acc_id accountId, bool renew);
+    void regStarted(qpjsua::AccountInfo account, bool renew);
 
 private:
     PjError error;

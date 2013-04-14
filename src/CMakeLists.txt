@@ -16,6 +16,7 @@ set(HEADERS
     transportconfiguration.h
     pjerror.h
     callinfo.h
+    accountinfo.h
 )
 
 set(QT_SRCS
@@ -26,6 +27,7 @@ set(QT_SRCS
     transportconfiguration.cpp
     pjerror.cpp
     callinfo.cpp
+    accountinfo.cpp
 )
 
 # configure a header file to pass some of the CMake settings

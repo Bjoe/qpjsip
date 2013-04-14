@@ -25,10 +25,10 @@ void Output::onLog(int level, QString message)
     std::cout << ">>> Log >>> Level " << level << " >>> " << message.toLatin1().constData() << std::endl;
 }
 
-void Output::onIncomingCall(pjsua_acc_id accountId, qpjsua::CallInfo aCallInfo)
+void Output::onIncomingCall(qpjsua::AccountInfo anAccountInfo, qpjsua::CallInfo aCallInfo)
 {
     std::cout << ">>> onIncomingCall <<< " << std::endl;
-    accountInfoOut(accountId);
+    accountInfoOut(anAccountInfo);
     callInfoOut(aCallInfo);
 }
 
@@ -44,11 +44,11 @@ void Output::onCallMediaState(qpjsua::CallInfo aCallInfo)
     callInfoOut(aCallInfo);
 }
 
-void Output::onRegStarted(pjsua_acc_id accountId, bool renew)
+void Output::onRegStarted(qpjsua::AccountInfo anAccountInfo, bool renew)
 {
     Q_UNUSED(renew);
     std::cout << ">>> onRegStarted <<< " << std::endl;
-    accountInfoOut(accountId);
+    accountInfoOut(anAccountInfo);
 }
 
 void Output::callInfoOut(qpjsua::CallInfo aCallInfo)
@@ -64,24 +64,18 @@ void Output::callInfoOut(qpjsua::CallInfo aCallInfo)
     out << ">>> State: " << aCallInfo.getInviteState() << "\n";
 }
 
-void Output::accountInfoOut(pjsua_acc_id accountId)
+void Output::accountInfoOut(qpjsua::AccountInfo anAccountInfo)
 {
-    pjsua_acc_info accountInfo;
-    pjsua_acc_get_info(accountId, &accountInfo);
-
-    if(accountInfo.has_registration == PJ_TRUE) {
-        std::cout << ">>> Client is registered" << std::endl;
+    QTextStream out(stdout);
+    if(anAccountInfo.hasRegistartion()) {
+        out << ">>> Client is registered\n";
     } else {
-        std::cout << ">>> Client is not registered" << std::endl;
+        out << ">>> Client is not registered\n";
     }
 
-    const char *statusText = pj_strbuf(&accountInfo.status_text);
-    if(statusText) {
-        std::cout << ">>> Status Text: " << statusText << std::endl;
-    }
-
-    std::cout << ">>> Status: " << accountInfo.status << std::endl;
-    std::cout << ">>> Reg last error: " << accountInfo.reg_last_err << std::endl;
+    out << ">>> Status Text: " << anAccountInfo.getStatusText() << "\n";
+    out << ">>> Status: " << anAccountInfo.getStatus() << "\n";
+    out << ">>> Reg last error: " << anAccountInfo.getLastError() << "\n";
 }
 
 } // namespace tests

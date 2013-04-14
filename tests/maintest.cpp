@@ -10,6 +10,7 @@
 
 #include "pjerror.h"
 #include "callinfo.h"
+#include "accountinfo.h"
 #include "engine.h"
 #include "loggingconfiguration.h"
 #include "mediaconfiguration.h"
@@ -67,8 +68,8 @@ int main(int argc, char *argv[])
         return 1;
     }
     output->connect(engine,
-                    SIGNAL(incomingCall(pjsua_acc_id, qpjsua::CallInfo)),
-                    SLOT(onIncomingCall(pjsua_acc_id, qpjsua::CallInfo)),
+                    SIGNAL(incomingCall(qpjsua::AccountInfo, qpjsua::CallInfo)),
+                    SLOT(onIncomingCall(qpjsua::AccountInfo, qpjsua::CallInfo)),
                     Qt::QueuedConnection);
     output->connect(engine,
                     SIGNAL(callState(qpjsua::CallInfo)),
@@ -79,8 +80,8 @@ int main(int argc, char *argv[])
                     SLOT(onCallMediaState(qpjsua::CallInfo)),
                     Qt::QueuedConnection);
     output->connect(engine,
-                    SIGNAL(regStarted(pjsua_acc_id, bool)),
-                    SLOT(onRegStarted(pjsua_acc_id, bool)),
+                    SIGNAL(regStarted(qpjsua::AccountInfo, bool)),
+                    SLOT(onRegStarted(qpjsua::AccountInfo, bool)),
                     Qt::QueuedConnection);
 
     engine->addAccount(accountConfiguration);

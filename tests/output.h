@@ -9,6 +9,7 @@
 #include "pjerror.h"
 
 #include "callinfo.h"
+#include "accountinfo.h"
 
 namespace tests {
 
@@ -21,14 +22,14 @@ public:
 
 public slots:
     void onLog(int level, QString message);
-    void onIncomingCall(pjsua_acc_id accountId, qpjsua::CallInfo aCallInfo);
+    void onIncomingCall(qpjsua::AccountInfo anAccountInfo, qpjsua::CallInfo aCallInfo);
     void onCallState(qpjsua::CallInfo aCallInfo);
     void onCallMediaState(qpjsua::CallInfo aCallInfo);
-    void onRegStarted(pjsua_acc_id accountId, bool renew);
+    void onRegStarted(qpjsua::AccountInfo anAccountInfo, bool renew);
 
 private:
     void callInfoOut(qpjsua::CallInfo aCallInfo);
-    void accountInfoOut(pjsua_acc_id accountId);
+    void accountInfoOut(qpjsua::AccountInfo anAccountInfo);
 };
 
 } // namespace tests

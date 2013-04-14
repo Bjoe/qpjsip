@@ -10,7 +10,8 @@ static Engine *instance = 0;
 
 Engine::Engine(QObject *parent) : QObject(parent), error(), status(PJ_SUCCESS)
 {
-    qRegisterMetaType<qpjsua::CallInfo>("qpjsua::CallInfo");
+    qRegisterMetaType<CallInfo>("qpjsua::CallInfo");
+    qRegisterMetaType<AccountInfo>("qpjsua::AccountInfo");
 }
 
 Engine::~Engine()
@@ -174,9 +175,11 @@ void Engine::on_call_state_wrapper(pjsua_call_id call_id, pjsip_event *event)
 void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
 {
     Q_UNUSED(event);
-    pjsua_call_info call_Info;
-    pjsua_call_get_info(call_id, &call_Info);
-    emit callState(CallInfo(call_id, call_Info));
+
+    pjsua_call_info call_info;
+    pjsua_call_get_info(call_id, &call_info);
+
+    emit callState(CallInfo(call_id, call_info));
 }
 
 void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
@@ -189,9 +192,14 @@ void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id
 void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
 {
     Q_UNUSED(rdata);
-    pjsua_call_info call_Info;
-    pjsua_call_get_info(call_id, &call_Info);
-    emit incomingCall(acc_id, CallInfo(call_id, call_Info));
+
+    pjsua_call_info call_info;
+    pjsua_call_get_info(call_id, &call_info);
+
+    pjsua_acc_info acc_info;
+    pjsua_acc_get_info(acc_id, &acc_info);
+
+    emit incomingCall(AccountInfo(acc_info), CallInfo(call_id, call_info));
 }
 
 void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
@@ -203,9 +211,9 @@ void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
 
 void Engine::on_call_media_state(pjsua_call_id call_id)
 {
-    pjsua_call_info call_Info;
-    pjsua_call_get_info(call_id, &call_Info);
-    emit callMediaState(CallInfo(call_id, call_Info));
+    pjsua_call_info call_info;
+    pjsua_call_get_info(call_id, &call_info);
+    emit callMediaState(CallInfo(call_id, call_info));
 }
 
 void Engine::on_reg_started_wrapper(pjsua_acc_id acc_id, pj_bool_t renew)
@@ -221,7 +229,11 @@ void Engine::on_reg_started(pjsua_acc_id acc_id, pj_bool_t renew)
     if(renew == PJ_TRUE) {
         _renew = true;
     }
-    emit regStarted(acc_id, _renew);
+
+    pjsua_acc_info acc_info;
+    pjsua_acc_get_info(acc_id, &acc_info);
+
+    emit regStarted(AccountInfo(acc_info), _renew);
 }
 
 void Engine::on_transport_state_wrapper(pjsip_transport *tp, pjsip_transport_state state, const pjsip_transport_state_info *info)
