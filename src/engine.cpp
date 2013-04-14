@@ -179,7 +179,7 @@ void Engine::on_call_state(pjsua_call_id call_id, pjsip_event *event)
     pjsua_call_info call_info;
     pjsua_call_get_info(call_id, &call_info);
 
-    emit callState(CallInfo(call_id, call_info));
+    emit callState(CallInfo(call_info));
 }
 
 void Engine::on_incoming_call_wrapper(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
@@ -199,7 +199,7 @@ void Engine::on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_
     pjsua_acc_info acc_info;
     pjsua_acc_get_info(acc_id, &acc_info);
 
-    emit incomingCall(AccountInfo(acc_info), CallInfo(call_id, call_info));
+    emit incomingCall(AccountInfo(acc_info), CallInfo(call_info));
 }
 
 void Engine::on_call_media_state_wrapper(pjsua_call_id call_id)
@@ -213,7 +213,8 @@ void Engine::on_call_media_state(pjsua_call_id call_id)
 {
     pjsua_call_info call_info;
     pjsua_call_get_info(call_id, &call_info);
-    emit callMediaState(CallInfo(call_id, call_info));
+
+    emit callMediaState(CallInfo(call_info));
 }
 
 void Engine::on_reg_started_wrapper(pjsua_acc_id acc_id, pj_bool_t renew)

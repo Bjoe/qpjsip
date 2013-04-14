@@ -21,6 +21,7 @@ void CallInfoTest::test()
 {
     pjsua_call_id callId = 1;
     pjsua_call_info callInfo;
+    callInfo.id = callId;
     char callIdStr[] = "call_id";
     callInfo.call_id = pj_str(callIdStr);
     char localInfo[] = "local_info";
@@ -40,7 +41,7 @@ void CallInfoTest::test()
     pjsip_inv_state invState = PJSIP_INV_STATE_CALLING;
     callInfo.state = invState;
 
-    qpjsua::CallInfo call(callId, callInfo);
+    qpjsua::CallInfo call(callInfo);
 
     QCOMPARE(call.getId(), 1);
     QCOMPARE(call.getCallId(), QString("call_id"));

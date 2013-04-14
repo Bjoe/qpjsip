@@ -10,7 +10,7 @@ class CallInfo
 {
 public:
     CallInfo();
-    CallInfo(pjsua_call_id aCallId, pjsua_call_info aCallInfo);
+    CallInfo(pjsua_call_info aCallInfo);
 
     pjsua_call_id getId() const;
     QString getCallId() const;
@@ -23,7 +23,6 @@ public:
     pjsip_inv_state getInviteState() const;
 
 private:
-    pjsua_call_id callId;
     pjsua_call_info callInfo;
 };
 

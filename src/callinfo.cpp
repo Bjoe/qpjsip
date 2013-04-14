@@ -2,17 +2,17 @@
 
 namespace qpjsua {
 
-CallInfo::CallInfo() : callId(), callInfo()
+CallInfo::CallInfo() : callInfo()
 {}
 
-CallInfo::CallInfo(pjsua_call_id aCallId, pjsua_call_info aCallInfo)
-    : callId(aCallId), callInfo(aCallInfo)
+CallInfo::CallInfo(pjsua_call_info aCallInfo)
+    : callInfo(aCallInfo)
 {
 }
 
 pjsua_call_id CallInfo::getId() const
 {
-    return callId;
+    return callInfo.id;
 }
 
 QString CallInfo::getCallId() const
