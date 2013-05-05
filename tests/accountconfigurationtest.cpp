@@ -19,17 +19,21 @@ private slots:
 
 void AccountConfigurationTest::testBuild()
 {
-    qpjsua::AccountCredential credential = qpjsua::AccountCredential::build()
+    qpjsua::AccountCredential *credential = qpjsua::AccountCredential::build()
             .withScheme("Digest")
             .withRealm("*")
             .withUsername("barfoo")
             .withPasswordType(PJSIP_CRED_DATA_PLAIN_PASSWD)
-            .withPassword("foobar");
-    qpjsua::AccountConfiguration::build()
+            .withPassword("foobar")
+            .create();
+    qpjsua::AccountConfiguration *configuration = qpjsua::AccountConfiguration::build()
             .withSipUrl("sip:fooo@bar.de")
             .withRegistrationUri("sip:bar.de")
             .addProxy("sip:proxy.example.com")
-            .addCredential(credential);
+            .addCredential(credential)
+            .create();
+    delete configuration;
+    delete credential;
 }
 
 }

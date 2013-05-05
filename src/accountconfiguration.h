@@ -14,17 +14,32 @@ class AccountCredential;
 class AccountConfiguration
 {
 public:
-    static AccountConfiguration build();
-    AccountConfiguration &withSipUrl(const QString &aSipUrl);
-    AccountConfiguration &withRegistrationUri(const QString &anUri);
-    AccountConfiguration &addProxy(const QString &aProxyUrl);
-    AccountConfiguration &addCredential(const AccountCredential aCredential);
+    ~AccountConfiguration();
+
+    class Builder
+    {
+    public:
+        Builder &withSipUrl(const QString &aSipUrl);
+        Builder &withRegistrationUri(const QString &anUri);
+        Builder &addProxy(const QString &aProxyUrl);
+        Builder &addCredential(AccountCredential *aCredential);
+
+        AccountConfiguration *create();
+
+    private:
+        Builder(AccountConfiguration *anInstance) : instance(anInstance) {}
+        AccountConfiguration *instance;
+
+        friend class AccountConfiguration;
+    };
+
+    static Builder build();
 
 private:
     QByteArray sipUrl;
     QByteArray registrationUri;
-    QList<QByteArray> proxys;
-    QList<AccountCredential> credentials;
+    QList<QByteArray *> proxys;
+    QList<AccountCredential *> credentials;
 
     AccountConfiguration();
 
@@ -34,12 +49,25 @@ private:
 class AccountCredential
 {
 public:
-    static AccountCredential build();
-    AccountCredential &withRealm(const QString &aRealm);
-    AccountCredential &withScheme(const QString &aScheme);
-    AccountCredential &withUsername(const QString &anUsername);
-    AccountCredential &withPasswordType(int aType);
-    AccountCredential &withPassword(const QString &aPassword);
+    class Builder
+    {
+    public:
+        Builder &withRealm(const QString &aRealm);
+        Builder &withScheme(const QString &aScheme);
+        Builder &withUsername(const QString &anUsername);
+        Builder &withPasswordType(int aType);
+        Builder &withPassword(const QString &aPassword);
+
+        AccountCredential *create();
+
+    private:
+        Builder(AccountCredential *anInstance) : instance(anInstance) {}
+        AccountCredential *instance;
+
+        friend class AccountCredential;
+    };
+
+    static Builder build();
 
 private:
     QByteArray realm;

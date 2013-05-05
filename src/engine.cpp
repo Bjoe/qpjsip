@@ -102,31 +102,28 @@ Engine *Engine::Builder::build(QObject *parent) const
     return engine;
 }
 
-void Engine::addAccount(AccountConfiguration &anAccountConfiguration)
+void Engine::addAccount(AccountConfiguration *anAccountConfiguration)
 {
     pjsua_acc_config accountConfig;
     pjsua_acc_config_default(&accountConfig);
 
-    accountConfig.id = pj_str(anAccountConfiguration.sipUrl.data());
-    accountConfig.reg_uri = pj_str(anAccountConfiguration.registrationUri.data());
+    accountConfig.id = pj_str(anAccountConfiguration->sipUrl.data());
+    accountConfig.reg_uri = pj_str(anAccountConfiguration->registrationUri.data());
 
-    accountConfig.proxy_cnt = anAccountConfiguration.proxys.size();
-    for(int i = 0; i < anAccountConfiguration.proxys.size(); ++i) {
-        QByteArray proxy = anAccountConfiguration.proxys.at(i);
-        char *data = new char[proxy.size() + 1];
-        strcpy(data, proxy.data());
-        accountConfig.proxy[i] = pj_str(data);
-        /// \TODO delete data ! Memory leak!
+    accountConfig.proxy_cnt = anAccountConfiguration->proxys.size();
+    for(int i = 0; i < anAccountConfiguration->proxys.size(); ++i) {
+        QByteArray *proxy = anAccountConfiguration->proxys.at(i);
+        accountConfig.proxy[i] = pj_str(proxy->data());
     }
 
-    accountConfig.cred_count = anAccountConfiguration.credentials.size();
-    for(int i = 0; i < anAccountConfiguration.credentials.size(); ++i) {
-        AccountCredential credential = anAccountConfiguration.credentials.at(i);
-        accountConfig.cred_info[i].realm = pj_str(credential.realm.data());
-        accountConfig.cred_info[i].scheme = pj_str(credential.scheme.data());
-        accountConfig.cred_info[i].username = pj_str(credential.username.data());
-        accountConfig.cred_info[i].data_type = credential.type;
-        accountConfig.cred_info[i].data = pj_str(credential.password.data());
+    accountConfig.cred_count = anAccountConfiguration->credentials.size();
+    for(int i = 0; i < anAccountConfiguration->credentials.size(); ++i) {
+        AccountCredential *credential = anAccountConfiguration->credentials.at(i);
+        accountConfig.cred_info[i].realm = pj_str(credential->realm.data());
+        accountConfig.cred_info[i].scheme = pj_str(credential->scheme.data());
+        accountConfig.cred_info[i].username = pj_str(credential->username.data());
+        accountConfig.cred_info[i].data_type = credential->type;
+        accountConfig.cred_info[i].data = pj_str(credential->password.data());
     }
     pjsua_acc_id account_id;
 

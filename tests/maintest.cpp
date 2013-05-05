@@ -46,18 +46,6 @@ int main(int argc, char *argv[])
 
     MediaConfiguration mediaConfiguration = MediaConfiguration::build();
 
-    AccountCredential credential = AccountCredential::build()
-            .withRealm(realm)
-            .withScheme(scheme)
-            .withUsername(username)
-            .withPasswordType(PJSIP_CRED_DATA_PLAIN_PASSWD)
-            .withPassword(password);
-    AccountConfiguration accountConfiguration = AccountConfiguration::build()
-            .withRegistrationUri("sip:" + registration)
-            .withSipUrl("sip:" + sip)
-            .addCredential(credential)
-            .addProxy("sip:" + proxy);
-
     Engine *engine = Engine::Builder::create()
             .withLoggingConfiguration(loggingConfiguration)
             .withMediaConfiguration(mediaConfiguration)
@@ -84,6 +72,21 @@ int main(int argc, char *argv[])
                     SLOT(onRegStarted(qpjsua::AccountInfo, bool)),
                     Qt::QueuedConnection);
 
+
+    AccountCredential *credential = AccountCredential::build()
+            .withRealm(realm)
+            .withScheme(scheme)
+            .withUsername(username)
+            .withPasswordType(PJSIP_CRED_DATA_PLAIN_PASSWD)
+            .withPassword(password)
+            .create();
+    AccountConfiguration *accountConfiguration = AccountConfiguration::build()
+            .withRegistrationUri("sip:" + registration)
+            .withSipUrl("sip:" + sip)
+            .addCredential(credential)
+            .addProxy("sip:" + proxy)
+            .create();
+
     engine->addAccount(accountConfiguration);
 
     output->out(engine->lastError(), "Add account");
@@ -94,5 +97,7 @@ int main(int argc, char *argv[])
     app.exec();
 
     delete engine;
+    delete accountConfiguration;
+    delete credential;
     return 0;
 }

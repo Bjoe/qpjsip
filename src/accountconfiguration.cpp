@@ -1,7 +1,5 @@
 #include "accountconfiguration.h"
 
-#include <QByteArray>
-
 namespace qpjsua {
 
 AccountConfiguration::AccountConfiguration()
@@ -10,33 +8,45 @@ AccountConfiguration::AccountConfiguration()
 {
 }
 
-AccountConfiguration AccountConfiguration::build()
+AccountConfiguration::~AccountConfiguration()
 {
-    return AccountConfiguration();
+    while(proxys.isEmpty() == false) {
+        delete proxys.takeFirst();
+    }
 }
 
-AccountConfiguration &AccountConfiguration::withSipUrl(const QString &aSipUrl)
+AccountConfiguration::Builder AccountConfiguration::build()
 {
-    sipUrl = aSipUrl.toLatin1();
+    return Builder(new AccountConfiguration());
+}
+
+AccountConfiguration::Builder &AccountConfiguration::Builder::withSipUrl(const QString &aSipUrl)
+{
+    instance->sipUrl = aSipUrl.toLatin1();
     return *this;
 }
 
-AccountConfiguration &AccountConfiguration::withRegistrationUri(const QString &anUri)
+AccountConfiguration::Builder &AccountConfiguration::Builder::withRegistrationUri(const QString &anUri)
 {
-    registrationUri = anUri.toLatin1();
+    instance->registrationUri = anUri.toLatin1();
     return *this;
 }
 
-AccountConfiguration &AccountConfiguration::addProxy(const QString &aProxyUrl)
+AccountConfiguration::Builder &AccountConfiguration::Builder::addProxy(const QString &aProxyUrl)
 {
-    proxys.append(aProxyUrl.toLatin1());
+    instance->proxys.append(new QByteArray(aProxyUrl.toLatin1()));
     return *this;
 }
 
-AccountConfiguration &AccountConfiguration::addCredential(const AccountCredential aCredential)
+AccountConfiguration::Builder &AccountConfiguration::Builder::addCredential(AccountCredential *aCredential)
 {
-    credentials.append(aCredential);
+    instance->credentials.append(aCredential);
     return *this;
+}
+
+AccountConfiguration *AccountConfiguration::Builder::create()
+{
+    return instance;
 }
 
 
@@ -44,39 +54,44 @@ AccountCredential::AccountCredential()
     : realm(""), scheme(""), username(""), password(""), type(0)
 {}
 
-AccountCredential AccountCredential::build()
+AccountCredential::Builder AccountCredential::build()
 {
-    return AccountCredential();
+    return Builder(new AccountCredential());
 }
 
-AccountCredential &AccountCredential::withRealm(const QString &aRealm)
+AccountCredential::Builder &AccountCredential::Builder::withRealm(const QString &aRealm)
 {
-    realm = aRealm.toLatin1();
+    instance->realm = aRealm.toLatin1();
     return *this;
 }
 
-AccountCredential &AccountCredential::withScheme(const QString &aScheme)
+AccountCredential::Builder &AccountCredential::Builder::withScheme(const QString &aScheme)
 {
-    scheme = aScheme.toLatin1();
+    instance->scheme = aScheme.toLatin1();
     return *this;
 }
 
-AccountCredential &AccountCredential::withUsername(const QString &anUsername)
+AccountCredential::Builder &AccountCredential::Builder::withUsername(const QString &anUsername)
 {
-    username = anUsername.toLatin1();
+    instance->username = anUsername.toLatin1();
     return *this;
 }
 
-AccountCredential &AccountCredential::withPasswordType(int aType)
+AccountCredential::Builder &AccountCredential::Builder::withPasswordType(int aType)
 {
-    type = aType;
+    instance->type = aType;
     return *this;
 }
 
-AccountCredential &AccountCredential::withPassword(const QString &aPassword)
+AccountCredential::Builder &AccountCredential::Builder::withPassword(const QString &aPassword)
 {
-    password = aPassword.toLatin1();
+    instance->password = aPassword.toLatin1();
     return *this;
+}
+
+AccountCredential *AccountCredential::Builder::create()
+{
+    return instance;
 }
 
 } // namespace qpjsua

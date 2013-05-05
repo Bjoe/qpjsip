@@ -26,7 +26,7 @@ class Engine : public QObject
 public:
     ~Engine();
 
-    void addAccount(AccountConfiguration &anAccountConfiguration);
+    void addAccount(AccountConfiguration *anAccountConfiguration);
 
     bool isValid() const;
     PjError lastError() const;
