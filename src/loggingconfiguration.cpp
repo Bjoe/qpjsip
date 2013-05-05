@@ -21,6 +21,7 @@ LoggingConfiguration &LoggingConfiguration::withLogOutput(const QObject *aReceiv
 {
     receiver = aReceiver;
     member = aMember;
+    return *this;
 }
 
 const QObject *LoggingConfiguration::getReceiver() const

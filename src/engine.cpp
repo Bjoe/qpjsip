@@ -35,16 +35,19 @@ Engine::Builder::Builder()
 Engine::Builder &Engine::Builder::withLoggingConfiguration(const LoggingConfiguration &aLoggingConfiguration)
 {
     loggingConfiguration = aLoggingConfiguration;
+    return *this;
 }
 
 Engine::Builder &Engine::Builder::withMediaConfiguration(const MediaConfiguration &aMediaConfiguration)
 {
     mediaConfiguration = aMediaConfiguration;
+    return *this;
 }
 
 Engine::Builder &Engine::Builder::withTransportConfiguration(const TransportConfiguration &aTransportConfiguration)
 {
     transportConfiguration = aTransportConfiguration;
+    return *this;
 }
 
 Engine *Engine::Builder::build(QObject *parent) const
@@ -109,8 +112,11 @@ void Engine::addAccount(AccountConfiguration &anAccountConfiguration)
 
     accountConfig.proxy_cnt = anAccountConfiguration.proxys.size();
     for(int i = 0; i < anAccountConfiguration.proxys.size(); ++i) {
-        QByteArray proxy = anAccountConfiguration.proxys.at(i); // TODO is a copy ?
-        accountConfig.proxy[i] = pj_str(proxy.data());
+        QByteArray proxy = anAccountConfiguration.proxys.at(i);
+        char *data = new char[proxy.size() + 1];
+        strcpy(data, proxy.data());
+        accountConfig.proxy[i] = pj_str(data);
+        /// \TODO delete data ! Memory leak!
     }
 
     accountConfig.cred_count = anAccountConfiguration.credentials.size();
