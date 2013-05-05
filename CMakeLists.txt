@@ -14,17 +14,15 @@ set(QPJSIP_VERSION ${QPJSIP_VERSION_MAJOR}.${QPJSIP_VERSION_MINOR}.${QPJSIP_VERS
 # http://www.cmake.org/Wiki/CMake/Tutorials/How_to_create_a_ProjectConfig.cmake_file
 # Offer the user the choice of overriding the installation directories
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(INSTALL_INCLUDE_DIR include CACHE PATH
-  "Installation directory for header files")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
 if(WIN32 AND NOT CYGWIN)
   set(DEF_INSTALL_CMAKE_DIR CMake)
 else()
   set(DEF_INSTALL_CMAKE_DIR lib/CMake/QpjSip)
 endif()
-set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
-  "Installation directory for CMake files")
+set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
 
-  # Make relative paths absolute (needed later on)
+# Make relative paths absolute (needed later on)
 foreach(p LIB INCLUDE CMAKE)
   set(var INSTALL_${p}_DIR)
   if(NOT IS_ABSOLUTE "${${var}}")
@@ -52,11 +50,15 @@ find_package(PkgConfig)
 pkg_check_modules(PJSIP libpjproject)
 link_directories(${PJSIP_LIBRARY_DIRS})
 
-include_directories("${PJSIP_INCLUDE_DIRS}" "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-
 if(${DOC})
     find_doxygen()
 endif(${DOC})
+
+include_directories(
+  "${PJSIP_INCLUDE_DIRS}"
+  "${PROJECT_SOURCE_DIR}/src"
+  "${PROJECT_BINARY_DIR}/src"
+)
 
 add_subdirectory(src)
 
@@ -76,16 +78,18 @@ export(TARGETS qpjsua
 export(PACKAGE QpjSip)
  
 # Create the QpjSipConfig.cmake and QpjSipConfigVersion files
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
-   "${INSTALL_INCLUDE_DIR}")
 # ... for the build tree
 set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src" "${PROJECT_BINARY_DIR}")
 configure_file(QpjSipConfig.cmake.in
   "${PROJECT_BINARY_DIR}/QpjSipConfig.cmake" @ONLY)
+
 # ... for the install tree
+file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
+   "${INSTALL_INCLUDE_DIR}")
 set(CONF_INCLUDE_DIRS "\${QPJSIP_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(QpjSipConfig.cmake.in
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/QpjSipConfig.cmake" @ONLY)
+
 # ... for both
 configure_file(QpjSipConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/QpjSipConfigVersion.cmake" @ONLY)

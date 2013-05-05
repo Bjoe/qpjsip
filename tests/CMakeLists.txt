@@ -26,7 +26,12 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/testconfig.h"
   )
 
-include_directories(../src ${CMAKE_CURRENT_BINARY_DIR}/../src ${QT_TEST_UTIL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(
+    ../src
+    ${CMAKE_CURRENT_BINARY_DIR}/../src
+    ${QT_TEST_UTIL_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 set(test_additional_lib
     qpjsua
