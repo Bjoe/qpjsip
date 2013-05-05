@@ -55,4 +55,9 @@ pjsip_inv_state CallInfo::getInviteState() const
     return callInfo.state;
 }
 
+pjsua_conf_port_id CallInfo::getConferenceSlot() const
+{
+    return callInfo.conf_slot;
+}
+
 } // namespace qpjsua

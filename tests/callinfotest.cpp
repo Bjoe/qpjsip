@@ -34,6 +34,7 @@ void CallInfoTest::test()
     callInfo.remote_contact = pj_str(remoteContact);
     char stateText[] = "state_text";
     callInfo.state_text = pj_str(stateText);
+    callInfo.conf_slot = 23;
 
     pjsua_call_media_status mediaStatus = PJSUA_CALL_MEDIA_ACTIVE;
     callInfo.media_status = mediaStatus;
@@ -56,6 +57,8 @@ void CallInfoTest::test()
 
     pjsip_inv_state state = PJSIP_INV_STATE_CALLING;
     QCOMPARE(call.getInviteState(), state);
+
+    QCOMPARE(call.getConferenceSlot(), 23);
 }
 
 }

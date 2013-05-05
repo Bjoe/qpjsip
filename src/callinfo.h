@@ -21,6 +21,7 @@ public:
     QString getStateText() const;
     pjsua_call_media_status getMediaStatus() const;
     pjsip_inv_state getInviteState() const;
+    pjsua_conf_port_id getConferenceSlot() const;
 
 private:
     pjsua_call_info callInfo;
