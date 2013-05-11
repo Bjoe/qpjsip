@@ -25,15 +25,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("devolab");
     QCoreApplication::setOrganizationDomain("devolab.de");
     QCoreApplication::setApplicationName("QPjsua Example");
+
     QSettings settings;
     //settings.setValue("foo", "bar");
-    QString realm = settings.value("realm").toString();
-    QString scheme = settings.value("scheme").toString();
-    QString username = settings.value("username").toString();
-    QString password = settings.value("password").toString();
-    QString registration = settings.value("registration").toString();
-    QString sip = settings.value("sip").toString();
-    QString proxy = settings.value("proxy").toString();
+    unsigned sipPort = settings.value("sip.port").toUInt();
 
     tests::Output *output = new tests::Output();
 
@@ -42,7 +37,7 @@ int main(int argc, char *argv[])
             .withLogOutput(output, SLOT(onLog(int,QString)));
 
     TransportConfiguration transportConfiguration = TransportConfiguration::build()
-            .withPort(5160);
+            .withPort(sipPort);
 
     MediaConfiguration mediaConfiguration = MediaConfiguration::build();
 
@@ -73,6 +68,15 @@ int main(int argc, char *argv[])
                     Qt::QueuedConnection);
 
 
+    QString realm = settings.value("realm").toString();
+    QString scheme = settings.value("scheme").toString();
+    QString username = settings.value("username").toString();
+    QString password = settings.value("password").toString();
+    QString registration = settings.value("registration").toString();
+    QString sip = settings.value("sip").toString();
+    QString proxy = settings.value("proxy").toString();
+    unsigned rtpPort = settings.value("rtp.port").toUInt();
+
     AccountCredential *credential = AccountCredential::build()
             .withRealm(realm)
             .withScheme(scheme)
@@ -83,6 +87,7 @@ int main(int argc, char *argv[])
     AccountConfiguration *accountConfiguration = AccountConfiguration::build()
             .withRegistrationUri("sip:" + registration)
             .withSipUrl("sip:" + sip)
+            .withRtpPort(rtpPort)
             .addCredential(credential)
             .addProxy("sip:" + proxy)
             .create();

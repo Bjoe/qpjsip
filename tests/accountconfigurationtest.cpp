@@ -29,6 +29,7 @@ void AccountConfigurationTest::testBuild()
     qpjsua::AccountConfiguration *configuration = qpjsua::AccountConfiguration::build()
             .withSipUrl("sip:fooo@bar.de")
             .withRegistrationUri("sip:bar.de")
+            .withRtpPort(2000)
             .addProxy("sip:proxy.example.com")
             .addCredential(credential)
             .create();

@@ -26,6 +26,12 @@ AccountConfiguration::Builder &AccountConfiguration::Builder::withSipUrl(const Q
     return *this;
 }
 
+AccountConfiguration::Builder &AccountConfiguration::Builder::withRtpPort(unsigned aPort)
+{
+    instance->port = aPort;
+    return *this;
+}
+
 AccountConfiguration::Builder &AccountConfiguration::Builder::withRegistrationUri(const QString &anUri)
 {
     instance->registrationUri = anUri.toLatin1();

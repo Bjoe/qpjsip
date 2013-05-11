@@ -21,6 +21,7 @@ public:
     public:
         Builder &withSipUrl(const QString &aSipUrl);
         Builder &withRegistrationUri(const QString &anUri);
+        Builder &withRtpPort(unsigned aPort);
         Builder &addProxy(const QString &aProxyUrl);
         Builder &addCredential(AccountCredential *aCredential);
 
@@ -40,6 +41,7 @@ private:
     QByteArray registrationUri;
     QList<QByteArray *> proxys;
     QList<AccountCredential *> credentials;
+    unsigned port;
 
     AccountConfiguration();
 
