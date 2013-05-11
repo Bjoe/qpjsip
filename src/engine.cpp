@@ -102,7 +102,7 @@ Engine *Engine::Builder::create(QObject *parent) const
     return engine;
 }
 
-void Engine::addAccount(AccountConfiguration *anAccountConfiguration)
+pjsua_acc_id Engine::addAccount(AccountConfiguration *anAccountConfiguration)
 {
     pjsua_acc_config accountConfig;
     pjsua_acc_config_default(&accountConfig);
@@ -129,8 +129,9 @@ void Engine::addAccount(AccountConfiguration *anAccountConfiguration)
     pjsua_acc_id account_id;
 
     if(checkStatus("Add account", pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id)) == false) {
-        return;
+        return -1;
     }
+    return account_id;
 }
 
 bool Engine::isValid() const
