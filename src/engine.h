@@ -41,7 +41,7 @@ signals:
 private:
     PjError error;
     pj_status_t status;
-    bool checkStatus(const QString &aMessage, pj_status_t aStatus);
+    bool checkStatus(const QString &aMessage);
 
     static void logger_callback_wrapper(int level, const char *data, int len);
     static void on_call_state_wrapper(pjsua_call_id call_id, pjsip_event *event);

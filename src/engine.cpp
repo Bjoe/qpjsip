@@ -56,9 +56,9 @@ Engine *Engine::Builder::create(QObject *parent) const
     qRegisterMetaType<pjsua_call_id>("pjsua_call_id");
 
     Engine *engine = new Engine(parent);
-    instance = engine;
 
-    if(engine->checkStatus("pjsua create", pjsua_create()) == false) {
+    engine->status = pjsua_create();
+    if(engine->checkStatus("pjsua create") == false) {
         return engine;
     }
 
@@ -83,7 +83,8 @@ Engine *Engine::Builder::create(QObject *parent) const
     pjsua_media_config mediaConfig;
     pjsua_media_config_default(&mediaConfig);
 
-    if(engine->checkStatus("pjsua init", pjsua_init(&config, &loggingConfig, &mediaConfig)) == false) {
+    engine->status = pjsua_init(&config, &loggingConfig, &mediaConfig);
+    if(engine->checkStatus("pjsua init") == false) {
         return engine;
     }
 
@@ -92,13 +93,16 @@ Engine *Engine::Builder::create(QObject *parent) const
 
     transportConfig.port = transportConfiguration.getPort();
 
-    if(engine->checkStatus("pjsua transport", pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL)) == false) {
+    engine->status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &transportConfig, NULL);
+    if(engine->checkStatus("pjsua transport") == false) {
         return engine;
     }
 
-    if(engine->checkStatus("pjsual start", pjsua_start()) == false) {
+    engine->status = pjsua_start();
+    if(engine->checkStatus("pjsual start") == false) {
         return engine;
     }
+    instance = engine;
     return engine;
 }
 
@@ -128,7 +132,8 @@ pjsua_acc_id Engine::addAccount(AccountConfiguration *anAccountConfiguration)
     }
     pjsua_acc_id account_id;
 
-    if(checkStatus("Add account", pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id)) == false) {
+    status = pjsua_acc_add(&accountConfig, PJ_TRUE, &account_id);
+    if(checkStatus("Add account") == false) {
         return -1;
     }
     return account_id;
@@ -144,13 +149,12 @@ PjError Engine::lastError() const
     return error;
 }
 
-bool Engine::checkStatus(const QString &aMessage, pj_status_t aStatus)
+bool Engine::checkStatus(const QString &aMessage)
 {
     bool ret = true;
-    status = aStatus;
-    if(aStatus != PJ_SUCCESS) {
+    if(status != PJ_SUCCESS) {
         pjsua_destroy();
-        error.setStatus(aStatus);
+        error.setStatus(status);
         error.setMessage(QString("%1 failed.").arg(aMessage));
         ret = false;
     }
