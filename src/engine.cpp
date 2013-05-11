@@ -21,7 +21,7 @@ Engine::~Engine()
     instance = 0;
 }
 
-Engine::Builder Engine::Builder::create()
+Engine::Builder Engine::build()
 {
     return Builder();
 }
@@ -50,7 +50,7 @@ Engine::Builder &Engine::Builder::withTransportConfiguration(const TransportConf
     return *this;
 }
 
-Engine *Engine::Builder::build(QObject *parent) const
+Engine *Engine::Builder::create(QObject *parent) const
 {
     qRegisterMetaType<pjsua_acc_id>("pjsua_acc_id");
     qRegisterMetaType<pjsua_call_id>("pjsua_call_id");

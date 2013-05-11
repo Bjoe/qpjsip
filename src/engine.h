@@ -62,11 +62,11 @@ public:
     class Builder
     {
     public:
-        static Builder create();
         Builder &withMediaConfiguration(const MediaConfiguration &aMediaConfiguration);
         Builder &withLoggingConfiguration(const LoggingConfiguration &aLoggingConfiguration);
         Builder &withTransportConfiguration(const TransportConfiguration &aTransportConfiguration);
-        Engine *build(QObject *parent = 0) const;
+
+        Engine *create(QObject *parent = 0) const;
 
     private:
         MediaConfiguration mediaConfiguration;
@@ -74,7 +74,11 @@ public:
         TransportConfiguration transportConfiguration;
 
         Builder();
+
+        friend class Engine;
     };
+
+    static Builder build();
 };
 
 } // namespace qpjsua

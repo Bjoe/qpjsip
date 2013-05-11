@@ -41,11 +41,11 @@ int main(int argc, char *argv[])
 
     MediaConfiguration mediaConfiguration = MediaConfiguration::build();
 
-    Engine *engine = Engine::Builder::create()
+    Engine *engine = Engine::build()
             .withLoggingConfiguration(loggingConfiguration)
             .withMediaConfiguration(mediaConfiguration)
             .withTransportConfiguration(transportConfiguration)
-            .build();
+            .create();
     output->out(engine->lastError(), "Create Engine");
     if(engine->isValid() == false) {
         return 1;
