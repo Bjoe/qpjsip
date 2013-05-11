@@ -11,13 +11,13 @@ TransportConfiguration TransportConfiguration::build()
     return TransportConfiguration();
 }
 
-TransportConfiguration &TransportConfiguration::withPort(int aPort)
+TransportConfiguration &TransportConfiguration::withPort(unsigned aPort)
 {
     port = aPort;
     return *this;
 }
 
-int TransportConfiguration::getPort() const
+unsigned TransportConfiguration::getPort() const
 {
     return port;
 }

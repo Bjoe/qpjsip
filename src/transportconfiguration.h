@@ -7,12 +7,12 @@ class TransportConfiguration
 {
 public:
     static TransportConfiguration build();
-    TransportConfiguration &withPort(int aPort);
+    TransportConfiguration &withPort(unsigned aPort);
 
-    int getPort() const;
+    unsigned getPort() const;
 
 private:
-    int port;
+    unsigned port;
 
     TransportConfiguration();
 };
