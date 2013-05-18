@@ -22,6 +22,7 @@ public:
         Builder &withSipUrl(const QString &aSipUrl);
         Builder &withRegistrationUri(const QString &anUri);
         Builder &withRtpPort(unsigned aPort);
+        Builder &withAllowContactRewrite(bool isAllow);
         Builder &addProxy(const QString &aProxyUrl);
         Builder &addCredential(AccountCredential *aCredential);
 
@@ -42,6 +43,7 @@ private:
     QList<QByteArray *> proxys;
     QList<AccountCredential *> credentials;
     unsigned port;
+    bool allowRewrite;
 
     AccountConfiguration();
 

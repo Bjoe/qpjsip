@@ -4,7 +4,7 @@ namespace qpjsua {
 
 AccountConfiguration::AccountConfiguration()
     : sipUrl(""), registrationUri(""),
-      proxys(), credentials()
+      proxys(), credentials(), port(0), allowRewrite(true)
 {
 }
 
@@ -29,6 +29,12 @@ AccountConfiguration::Builder &AccountConfiguration::Builder::withSipUrl(const Q
 AccountConfiguration::Builder &AccountConfiguration::Builder::withRtpPort(unsigned aPort)
 {
     instance->port = aPort;
+    return *this;
+}
+
+AccountConfiguration::Builder &AccountConfiguration::Builder::withAllowContactRewrite(bool isAllow)
+{
+    instance->allowRewrite = isAllow;
     return *this;
 }
 

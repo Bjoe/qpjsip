@@ -114,7 +114,11 @@ pjsua_acc_id Engine::addAccount(AccountConfiguration *anAccountConfiguration)
     accountConfig.id = pj_str(anAccountConfiguration->sipUrl.data());
     accountConfig.reg_uri = pj_str(anAccountConfiguration->registrationUri.data());
     accountConfig.rtp_cfg.port = anAccountConfiguration->port;
-
+    if(anAccountConfiguration->allowRewrite) {
+        accountConfig.allow_contact_rewrite = PJ_TRUE;
+    } else {
+        accountConfig.allow_contact_rewrite = PJ_FALSE;
+    }
     accountConfig.proxy_cnt = anAccountConfiguration->proxys.size();
     for(int i = 0; i < anAccountConfiguration->proxys.size(); ++i) {
         QByteArray *proxy = anAccountConfiguration->proxys.at(i);

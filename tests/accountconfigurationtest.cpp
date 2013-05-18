@@ -27,6 +27,7 @@ void AccountConfigurationTest::testBuild()
             .withPassword("foobar")
             .create();
     qpjsua::AccountConfiguration *configuration = qpjsua::AccountConfiguration::build()
+            .withAllowContactRewrite(true)
             .withSipUrl("sip:fooo@bar.de")
             .withRegistrationUri("sip:bar.de")
             .withRtpPort(2000)

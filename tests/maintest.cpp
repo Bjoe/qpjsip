@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
             .withRegistrationUri("sip:" + registration)
             .withSipUrl("sip:" + sip)
             .withRtpPort(rtpPort)
+            .withAllowContactRewrite(false)
             .addCredential(credential)
             .addProxy("sip:" + proxy)
             .create();
