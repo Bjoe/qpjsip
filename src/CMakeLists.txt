@@ -1,13 +1,4 @@
 
-if(NOT ${QT5})
-    set(QT_MOC_HEADERS
-        engine.h
-    )
-
-    qt4_wrap_cpp(MOC_OUTFILES ${QT_MOC_HEADERS})
-
-endif(NOT ${QT5})
-
 set(HEADERS
     engine.h
     accountconfiguration.h
@@ -18,6 +9,13 @@ set(HEADERS
     callinfo.h
     accountinfo.h
 )
+
+if(${Qt4})
+    set(QT_MOC_HEADERS
+        engine.h
+    )
+    qt4_wrap_cpp(MOC_OUTFILES ${QT_MOC_HEADERS})
+endif(${Qt4})
 
 set(QT_SRCS
     engine.cpp
@@ -39,9 +37,11 @@ configure_file (
 
 add_library(qpjsua STATIC ${QT_SRCS} ${MOC_OUTFILES})
 
-if(${QT5})
-    qt5_use_modules(qpjsua Core)
-endif(${QT5})
+if(${Qt4})
+  target_link_libraries(qpjsua ${QT_LIBRARIES} ${PJSIP_LIBRARIES}) # ${Boost_LIBRARIES})
+else(${Qt4})
+  target_link_libraries(qpjsua Qt5::Core ${PJSIP_LIBRARIES}) # ${Boost_LIBRARIES})
+endif(${Qt4})
 
 set_target_properties(qpjsua PROPERTIES
   PUBLIC_HEADER "${HEADERS};${CMAKE_CURRENT_BINARY_DIR}/config.h")

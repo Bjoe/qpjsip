@@ -1,6 +1,5 @@
 
 #include <QtTest/QtTest>
-#include "testcoverageobject.h"
 #include "testconfig.h"
 
 #include <QString>
@@ -10,7 +9,7 @@
 
 namespace tests {
 
-class LoggingConfigurationTest : public qttestutil::TestCoverageObject
+class LoggingConfigurationTest : public QObject
 {
     Q_OBJECT
 

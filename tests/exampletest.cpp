@@ -1,13 +1,11 @@
 
 #include <QtTest/QtTest>
 
-#include "testcoverageobject.h"
-
 #include "testconfig.h"
 
-namespace tests {
+namespace examples {
   
-class ExampleTest : public qttestutil::TestCoverageObject
+class ExampleTest : public QObject
 {
     Q_OBJECT
 
@@ -27,5 +25,5 @@ void ExampleTest::testExample()
 
 }
 
-QTEST_MAIN(tests::ExampleTest)
+QTEST_MAIN(examples::ExampleTest)
 #include "moc_exampletest.cpp"

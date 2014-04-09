@@ -3,15 +3,13 @@
 
 #include <pj/types.h>
 
-#include "testcoverageobject.h"
-
 #include "testconfig.h"
 
 #include "pjerror.h"
 
 namespace tests {
 
-class PjErrorTest : public qttestutil::TestCoverageObject
+class PjErrorTest : public QObject
 {
     Q_OBJECT
 
@@ -24,7 +22,7 @@ void PjErrorTest::testError()
     qpjsua::PjError error;
 
     QCOMPARE(error.getMessage(), QString(""));
-    QCOMPARE(error.getStatus(), PJ_SUCCESS);
+    QCOMPARE(error.getStatus(), static_cast<pj_status_t>(PJ_SUCCESS));
 
     error.setMessage("foo");
     error.setStatus(1);

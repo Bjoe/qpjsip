@@ -1,7 +1,6 @@
 
 
 #include <QtTest/QtTest>
-#include "testcoverageobject.h"
 #include "testconfig.h"
 
 #include <QString>
@@ -11,7 +10,7 @@
 
 namespace tests {
 
-class TransportConfigurationTest : public qttestutil::TestCoverageObject
+class TransportConfigurationTest : public QObject
 {
     Q_OBJECT
 

@@ -1,6 +1,5 @@
 
 #include <QtTest/QtTest>
-#include "testcoverageobject.h"
 #include "testconfig.h"
 
 #include <pjsua-lib/pjsua.h>
@@ -9,7 +8,7 @@
 
 namespace tests {
 
-class CallInfoTest : public qttestutil::TestCoverageObject
+class CallInfoTest : public QObject
 {
     Q_OBJECT
 

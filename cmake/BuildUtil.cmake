@@ -3,56 +3,30 @@
 #ADD_DEFINITIONS( "-Wall" )
 # ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 
-# Siehe http://developer.qt.nokia.com/wiki/UnitTesting
-MACRO(qt_add_test testname testsrc)
-     SET(test_${testname}_SRCS ${testsrc})
-
-     SET(special_additional)
-     FOREACH(_additional ${ARGN})
-	  LIST(APPEND special_additional ${_additional})
-     ENDFOREACH(_additional)
-  
-     if(NOT ${QT5})
-        qt4_automoc(${test_${testname}_SRCS} ${special_additional})
-     endif(NOT ${QT5})
-
-     add_executable(test_${testname} ${test_${testname}_SRCS} ${special_additional} ${test_additional})
-     target_link_libraries(test_${testname} ${test_additional_lib} ${QT_LIBRARIES})
-
-     if(${QT5})
-        qt5_use_modules(test_${testname} Test)
-     endif(${QT5})
-  
-     add_test(test${testname} ${EXECUTABLE_OUTPUT_PATH}/test_${testname})
-
-ENDMACRO()
-
 MACRO(qt_test testname testsrc)
      SET(test_${testname}_SRCS ${testsrc})
 
      SET(special_additional)
      FOREACH(_additional ${ARGN})
-	  LIST(APPEND special_additional ${_additional})
+      LIST(APPEND special_additional ${_additional})
      ENDFOREACH(_additional)
 
-     if(${QT5})
+     if(${Qt4})
+        qt4_automoc(${test_${testname}_SRCS} ${special_additional})
+     else(${Qt4})
         qt5_wrap_cpp(test_${testname}_MOC ${test_${testname}_SRCS})
-     else(${QT5})
-        QT4_GET_MOC_FLAGS(moc_flags)
-        GET_FILENAME_COMPONENT(test_${testname}_SRCS ${test_${testname}_SRCS} ABSOLUTE)
-        QT4_MAKE_OUTPUT_FILE(${test_${testname}_SRCS} moc_ cpp test_${testname}_MOC)
-        QT4_CREATE_MOC_COMMAND(${test_${testname}_SRCS} ${test_${testname}_MOC} "${moc_flags}" "")
-     endif(${QT5})
-
-     add_custom_target(moc_${testname}_target DEPENDS ${test_${testname}_MOC})
+        add_custom_target(moc_${testname}_target DEPENDS ${test_${testname}_MOC})
+     endif(${Qt4})
+     
      add_executable(test_${testname} ${test_${testname}_SRCS} ${special_additional} ${test_additional})
-     add_dependencies(test_${testname} moc_${testname}_target)
-     target_link_libraries(test_${testname} ${test_additional_lib} ${QT_LIBRARIES})
 
-     if(${QT5})
-        qt5_use_modules(test_${testname} Test)
-     endif(${QT5})
-  
+     if(${Qt4})
+        target_link_libraries(test_${testname} ${test_additional_lib} ${QT_LIBRARIES})
+     else(${Qt4})
+        add_dependencies(test_${testname} moc_${testname}_target)
+        target_link_libraries(test_${testname} ${test_additional_lib} Qt5::Test)
+     endif(${Qt4})
+     
      add_test(test${testname} ${EXECUTABLE_OUTPUT_PATH}/test_${testname})
 ENDMACRO()
 
