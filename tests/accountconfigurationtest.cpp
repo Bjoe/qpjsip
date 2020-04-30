@@ -40,4 +40,4 @@ void AccountConfigurationTest::testBuild()
 }
 
 QTEST_MAIN(tests::AccountConfigurationTest)
-#include "moc_accountconfigurationtest.cpp"
+#include "accountconfigurationtest.moc"

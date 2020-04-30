@@ -27,4 +27,4 @@ void TransportConfigurationTest::testBuild()
 }
 
 QTEST_MAIN(tests::TransportConfigurationTest)
-#include "moc_transportconfigurationtest.cpp"
+#include "transportconfigurationtest.moc"

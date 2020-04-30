@@ -26,4 +26,4 @@ void LoggingConfigurationTest::testBuild()
 }
 
 QTEST_MAIN(tests::LoggingConfigurationTest)
-#include "moc_loggingconfigurationtest.cpp"
+#include "loggingconfigurationtest.moc"

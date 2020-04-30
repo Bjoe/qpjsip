@@ -63,6 +63,6 @@ void CallInfoTest::test()
 }
 
 QTEST_MAIN(tests::CallInfoTest)
-#include "moc_callinfotest.cpp"
+#include "callinfotest.moc"
 
 

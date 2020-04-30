@@ -1,23 +1,15 @@
 
-set(HEADERS
-    engine.h
-    accountconfiguration.h
-    loggingconfiguration.h
-    mediaconfiguration.h
-    transportconfiguration.h
-    pjerror.h
-    callinfo.h
-    accountinfo.h
-)
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+  )
 
-if(${Qt4})
-    set(QT_MOC_HEADERS
-        engine.h
-    )
-    qt4_wrap_cpp(MOC_OUTFILES ${QT_MOC_HEADERS})
-endif(${Qt4})
+add_library(qpjsua)
 
-set(QT_SRCS
+target_sources(qpjsua
+PRIVATE
     engine.cpp
     accountconfiguration.cpp
     loggingconfiguration.cpp
@@ -26,28 +18,53 @@ set(QT_SRCS
     pjerror.cpp
     callinfo.cpp
     accountinfo.cpp
+PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/engine.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/accountconfiguration.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/loggingconfiguration.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/mediaconfiguration.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/transportconfiguration.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/pjerror.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/callinfo.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/accountinfo.h>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/config.h>
+
+    $<INSTALL_INTERFACE:include/engine.h>
+    $<INSTALL_INTERFACE:include/accountconfiguration.h>
+    $<INSTALL_INTERFACE:include/loggingconfiguration.h>
+    $<INSTALL_INTERFACE:include/mediaconfiguration.h>
+    $<INSTALL_INTERFACE:include/transportconfiguration.h>
+    $<INSTALL_INTERFACE:include/pjerror.h>
+    $<INSTALL_INTERFACE:include/callinfo.h>
+    $<INSTALL_INTERFACE:include/accountinfo.h>
+    $<INSTALL_INTERFACE:include/config.h>
 )
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-  "${PROJECT_SOURCE_DIR}/config.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/config.h"
-  )
+target_compile_features(qpjsua PUBLIC cxx_std_17)
+target_link_libraries(qpjsua PUBLIC Qt5::Core PkgConfig::PJSIP)
+target_include_directories(qpjsua
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
+add_library(${namespace}::qpjsua ALIAS qpjsua)
 
-add_library(qpjsua STATIC ${QT_SRCS} ${MOC_OUTFILES})
+install(FILES
+    engine.h
+    accountconfiguration.h
+    loggingconfiguration.h
+    mediaconfiguration.h
+    transportconfiguration.h
+    pjerror.h
+    callinfo.h
+    accountinfo.h
+    ${CMAKE_CURRENT_BINARY_DIR}/config.h
+DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
-if(${Qt4})
-  target_link_libraries(qpjsua ${QT_LIBRARIES} ${PJSIP_LIBRARIES}) # ${Boost_LIBRARIES})
-else(${Qt4})
-  target_link_libraries(qpjsua Qt5::Core ${PJSIP_LIBRARIES}) # ${Boost_LIBRARIES})
-endif(${Qt4})
-
-set_target_properties(qpjsua PROPERTIES
-  PUBLIC_HEADER "${HEADERS};${CMAKE_CURRENT_BINARY_DIR}/config.h")
- 
 install(TARGETS qpjsua
-  # IMPORTANT: Add the qpjsua library to the "export-set"
-  EXPORT QpjSipTargets
-  ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev
-  PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}" COMPONENT dev)
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+

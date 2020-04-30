@@ -41,4 +41,4 @@ void AccountInfoTest::test()
 }
 
 QTEST_MAIN(tests::AccountInfoTest)
-#include "moc_accountinfotest.cpp"
+#include "accountinfotest.moc"

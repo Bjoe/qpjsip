@@ -26,4 +26,4 @@ void ExampleTest::testExample()
 }
 
 QTEST_MAIN(examples::ExampleTest)
-#include "moc_exampletest.cpp"
+#include "exampletest.moc"
