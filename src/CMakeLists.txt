@@ -46,6 +46,7 @@ target_include_directories(qpjsua
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:include>
 )
 add_library(${namespace}::qpjsua ALIAS qpjsua)
 

@@ -29,7 +29,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(PJSIP IMPORTED_TARGET libpjproject)
+pkg_check_modules(PJSIP IMPORTED_TARGET libpjproject REQUIRED)
 
 add_subdirectory(src)
 
